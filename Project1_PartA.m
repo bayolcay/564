@@ -1,6 +1,22 @@
 clear all;
 delete all;
 
+%% Intitialization data for largest product in the Kool M?® MAX family 
+Partno=79337;
+U0=4*pi*1e-7
+Uinit=26;
+ 
+CoreHeight=25.4*1e-3;                                                      %m
+InnerDia=78.60*1e-3;                                                       %m
+OuterDia=132.60*1e-3;                                                      %m
+WindowArea=4710*1e-6;                                                      % m2
+CrossSection= 678*1e-6;                                                    % m2
+MeanPathLength=324*1e-3;                                                   % m
+gap= 2e-3;
+
+Temperature=100;                                                           %C According to Datasheet, KoolMu-26u permeability does not change considerably wrt T
+IDC=40;
+
 %% Permeability vs Field Strength/Flux Density vs Field Strength Curves for Kool M?® MAX (?26)
 
 Hx=0:1:700;
@@ -10,17 +26,20 @@ Bx=0;
 for i=1:length(Hx)
     Ux(i)=1/(0.01 + 5.700e-08*Hx(i)^2.205 );
     Bx(i,1)= Hx(i)*100;                                                     % creation of B-H curve for FEMM unit conversion to AT/m
-    Bx(i,2)=(  (8.741e-02+1.634e-02*Hx(i)+7.844e-04*Hx(i)*Hx(i))  / (1+1.044e-01*Hx(i)+6.576e-04*Hx(i)*Hx(i)) )^1.814;
+    Bx(i,2)=(  (8.741e-02+1.634e-02*Hx(i)+7.844e-04*Hx(i)*Hx(i))  / (1+1.044e-01*Hx(i)+6.576e-04*Hx(i)*Hx(i)) )^1.814; % nonlinear B curve
+    Bx(i,3)= Hx(i)*100*Uinit*U0;  
 end
 % plot(Ux)
  
 %figure; 
-% plot(Bx(:,2),'LineWidth',2)
+plot(Bx(:,3),'LineWidth',2)
 xlabel('H (AT/cm)');
 ylabel('B (T) ')
-title('B-H Curve of Kool Mu^® MAX (26u)') 
+%%title('B-H Curve of Kool Mu^® MAX (26u)') 
 
-
+grid on;
+grid minor;
+ 
 annotation('line',[.125 .42],[.1 .69])
 annotation('line',[.43 .8],[.69 .92])
 annotation('line',[.42 .42],[.125 .75],'LineStyle',':','LineWidth',2)
@@ -32,25 +51,10 @@ TxtLoc2=[0.5 0.4 0.01 0.3]               % x   y   w    h
 annotation('textbox',TxtLoc1,'String','Linear Region','FitBoxToText','on','FontSize',10);
 annotation('textbox',TxtLoc2,'String', 'Saturation Region','FitBoxToText','on','FontSize',10);
 
- grid on;
- grid minor;
+
+
  
- %% Intitialization data for largest product in the Kool M?® MAX family 
- Partno=79337;
- U0=4*pi*1e-7
- Uinit=26;
- 
- CoreHeight=25.4*1e-3;                                                      %m
- InnerDia=78.60*1e-3;                                                       %m
- OuterDia=132.60*1e-3;                                                      %m
- WindowArea=4710*1e-6;                                                      % m2
- CrossSection= 678*1e-6;                                                    % m2
- MeanPathLength=324*1e-3;                                                   % m
- 
- Temperature=100;                                                           %C According to Datasheet, KoolMu-26u permeability does not change considerably wrt T
- IDC=40;
- 
- %% Selection of operating point
+%% Selection of operating point
  % since powder core materials show "soft saturation"  characteristics
  % it is not an easy process to select a saturation region
  % bacause of that an operating point where B-H curve slope considerably
@@ -100,20 +104,29 @@ Total_Flux_NonHomo_nonLinear = CoreHeight*integral(@(r)FluxDensity_NonHomo_NonLi
  
  %% PartA.5     Inductance Calculation of Gapped Toroid with homogeneous flux distribution, linear BH characteristics 
  
- gap= 2e-3;
  Ur=Uinit*U0;
- Total_Flux_nonFringing=CrossSection*TurnsCount*IDC/(gap/U0+(MeanPathLength-gap)/Ur)
+ % taking MeanPathLength-gap=MeanPathLength
+ Total_Flux_nonFringing=CrossSection*TurnsCount*IDC/(gap/U0+MeanPathLength/Ur)
  L_NonFringing = TurnsCount*Total_Flux_nonFringing/IDC
  
 %% PartA.6     Inductance Calculation of Gapped Toroid with homogeneous flux distribution, linear BH characteristics 
 %air gap crossection should be taken larger 
 %fringing area would be proportional to the gap length
-%therefor gap dimensions can be enlargen by the gap length
-%as the total flux leaving in the core would be equal to the flux in the air gap
+%therefore gap dimensions can be enlargen by the gap length
 
-%F=TotalFlux*totalReuctance
+% i.o.w 
+CrossSection_gap= ((OuterDia-InnerDia)*0.5+gap)*(CoreHeight+gap);
 
-%L_Fringing = TurnsCount*TotalFlux/IDC;
+% using magnetic circuit approach
+% and assuming the total flux leaving in the core would be equal to the flux in the air gap
+% following equation can be written
+% NI=(Rcore+Rgap)*Bcore*CrossSection
+% and assuming core is linear
+Ur=Uinit*U0;
+%then
+FringingHomoLinearCoreFluxDensity= TurnsCount*IDC/( CrossSection*(MeanPathLength/(Ur*CrossSection)+gap/(U0*CrossSection_gap))     );
+
+L_Fringing = TurnsCount*CrossSection*FringingHomoLinearCoreFluxDensity/IDC;
  
 
  

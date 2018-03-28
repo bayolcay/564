@@ -62,8 +62,9 @@ annotation('textbox',TxtLoc2,'String', 'Saturation Region','FitBoxToText','on','
 
  
  FieldStrength_AtIdc=300*1e2;                                               %A*T/m
- TurnsCount=FieldStrength_AtIdc*MeanPathLength/IDC;                         % too many turns!!! 
-
+ TurnsCount=FieldStrength_AtIdc*MeanPathLength/IDC;                         % 
+ TurnsCount= TurnsCount - mod(TurnsCount,10);                               % for simulation simplicity, too many turns!!! 
+ 
 %% PartA.1     Inductance Calculation with homogeneous flux distribution and linear BH characteristics
 
  Ur=Uinit*U0;
@@ -72,9 +73,8 @@ annotation('textbox',TxtLoc2,'String', 'Saturation Region','FitBoxToText','on','
  L_Homo_Linear= TurnsCount*Total_Flux_Homo/IDC;
  
 %% PartA.2     Inductance Calculation with non-homogeneous flux distribution and linear BH characteristics
-
-FluxDensity_Linear=  @(r) Ur*TurnsCount*IDC./(pi*r)
-
+Ur=Uinit*U0;
+FluxDensity_Linear=  @(r) Ur*TurnsCount*IDC./(2*pi*r)
 Total_Flux_NonHomo = CoreHeight*integral(@(r)FluxDensity_Linear(r),InnerDia*0.5,OuterDia*0.5)
 
 L_NonHomo_Linear = TurnsCount*Total_Flux_NonHomo/IDC
@@ -82,24 +82,19 @@ L_NonHomo_Linear = TurnsCount*Total_Flux_NonHomo/IDC
  
 %% PartA.3     Inductance Calculation with homogeneous flux distribution, non-linear BH characteristics and DC current is increased by 50%
 IDC1_5= IDC*1.5;
-FieldStrength_At1_5_Idc=IDC1_5*TurnsCount/MeanPathLength;
-Unonlinear=0.01*1/(0.01 + 5.700e-08*(FieldStrength_At1_5_Idc*1e-2)^2.205 ); %calculation of permeability at IDC with given permeability fitter
-                                                                            %function given in terms of cm                                                                             %output given as %
-Ur=Unonlinear*Uinit*U0;
-HomononLinearFluxDensity=Ur*FieldStrength_At1_5_Idc;
-Total_Flux_Homo_Nonlinear=HomononLinearFluxDensity*CrossSection
+
+Hnl=1e-2*IDC1_5*TurnsCount/MeanPathLength;                                   %FieldStrength_At1_5_Idc function given in terms of cm                                                                             %output given as %
+HomononLinearFluxDensity=(  (8.741e-02+1.634e-02*Hnl+7.844e-04*Hnl*Hnl)  / (1+1.044e-01*Hnl+6.576e-04*Hnl*Hnl) )^1.814; % nonlinear B curve
+Total_Flux_Homo_Nonlinear=HomononLinearFluxDensity*CrossSection;
 L_HomoNonlinear= TurnsCount*Total_Flux_Homo_Nonlinear/IDC1_5;
  
 %% PartA.4     Inductance Calculation with non-homogeneous flux distribution, non-linear BH characteristics and DC current is increased by 50%
  
-FieldStrength_atR=@(r) IDC1_5*TurnsCount./(pi*r*1e2);
-
-Permeability_atR=@(r)  Uinit*U0*0.01 ./ ( 0.01 + 5.700e-08 * FieldStrength_atR(r).^2.205); 
-
-FluxDensity_NonHomo_NonLinear= @(r) Permeability_atR(r)*TurnsCount*IDC1_5./(pi*r) 
-Total_Flux_NonHomo_nonLinear = CoreHeight*integral(@(r)FluxDensity_NonHomo_NonLinear(r),InnerDia*0.5,OuterDia*0.5);
+H_atR=@(r) IDC1_5*TurnsCount./(pi*r*1e2);                                   % FieldStrength_atR
+FluxDensity_atR= @(r) (  (8.741e-02+1.634e-02*H_atR(r)+7.844e-04*H_atR(r).^2) ./ (1+1.044e-01*H_atR(r)+6.576e-04*H_atR(r).^2) ).^1.814; % nonlinear B curve
+Total_Flux_NonHomo_nonLinear = CoreHeight*integral(@(r)FluxDensity_atR(r),InnerDia*0.5,OuterDia*0.5);
  
- L_NonHomo_nonLinear = TurnsCount*Total_Flux_NonHomo_nonLinear/IDC1_5
+L_NonHomo_nonLinear = TurnsCount*Total_Flux_NonHomo_nonLinear/IDC1_5
  
  
  %% PartA.5     Inductance Calculation of Gapped Toroid with homogeneous flux distribution, linear BH characteristics 
@@ -128,7 +123,7 @@ FringingHomoLinearCoreFluxDensity= TurnsCount*IDC/( CrossSection*(MeanPathLength
 
 L_Fringing = TurnsCount*CrossSection*FringingHomoLinearCoreFluxDensity/IDC;
  
-
+%% Transformer Design Calculations
  
  
  

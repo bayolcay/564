@@ -1,43 +1,21 @@
 %% EE564 - Design of Electrical Machines
-%% Project-3: Induction Generator Design
-%% Name: Olcay BAY
-%% ID: 1673672
+%%Project-3: Induction Generator Design
+%%Name: Olcay BAY
+%%ID: 1673672
 %% INTRODUCTION
 % In this project, design of a squirrel cage asynchronous
 % generator for wind turbines will be performed
 
-%% CONTENTS
-%
-% # Project specifications and selected main design inputs
-% # Calculation of main dimensions
-% # Selection of main dimensions and validation of machine loading
-% # Selection of stator slot number and turn numbers
-% # Validating the results and iterations
-% # Calculation of MMF, flux density, winding factors and the resultant
-% induced voltage
-% # Selection of rotor slot number
-% # Selection of stator and rotor conductors
-% # Calculation of stator slot and rotor bar dimensions
-% # Calculation of equivalent core length and effective air gap distance
-% # Calculation of winding and bar resistances, leakage inductances and
-% magnetizing inductance
-% # Calculation of copper and aluminium losses
-% # Calculation of copper and aluminium masses
-% # Calculation of iron mass
-% # Calculation of core losses and the core loss resistance of equivalent
 % circuit
 % # Calculation of stator to rotor turns ratio
-% # Calculation of efficiency
 % # Torque-speed characteristics
 % # Determination of basic parameters like starting torque, maximum torque
-% etc.
 % # Motoranalysis
 % # Conclusions
 % # References
 
 
 %%  Specifications of asynchronous squirrel cage induction motor
-%%
 % Rated Power Output: 250 kW
 % Line to line voltage: 400 V
 % Power factor: 0.87
@@ -52,7 +30,7 @@
 % Efficiency: IE2,  95-96%
 % Ingress protection: IP54
 % Connection of motor windings:Y
-% Ambient Temperature: 40C 
+% Ambient Temperature: 50C 
 %% Design Procedure
 % Design procedure is given by the following flowchart[1]: 
 clear all;
@@ -79,7 +57,9 @@ pf_expected = 0.86; %
 n_expected = 0.95; %
 %
 u0 = 4*pi*1e-7;
-Tw=75; % Average winding temperature
+Tsurf=90; %Machine Surfeace Temperature
+Tamb=50; % Ambient Temperature, Worst Case
+Tw=100; % Average winding temperature
 Kfe=0.95; % Lamination Factor, for the selected lamination
 %
 %% Machine Size
@@ -99,7 +79,7 @@ title('Specific Machine Constant (Cmec) vs power/pole-pair','FontSize',16,'FontW
 Cmech = 220; % kWs/m^3
 % Calculation of the aspect ratio 
 X = (pi/pole)*(p)^(1/3); % aspect ratio
-fprintf('Aspect ratio is %g\n',X);
+fprintf('Aspect ratio: %g\n',X);
 % diameter^2*length can be calculated by using the Cmec relation:
 D2L = Pout_n*1e-3/(Cmech*(Nsync/60)); %
 % From these two information, the inner diameter and length can be calculated:
@@ -112,9 +92,9 @@ Length=round(Length,3); % round up to 3 decimal places
 % The air gap calculation a scale factor of 1.6 is added for heavy duty operation.
 g = 1e-3*1.6*(0.18+0.006*Pout_n^0.4); % m
 g=  round(g, 4); % round up to 4 decimal places
-fprintf('Inner diameter of the stator is %g m\n',Di_s);
-fprintf('Length of the machine is %g m\n',Length);
-fprintf('\nAir gap distance is %g mm\n\n',g);
+fprintf('Inner diameter of the stator: %g m\n',Di_s);
+fprintf('Length of the machine: %g m\n',Length);
+fprintf('Air gap distance: %g mm\n\n',g);
 
 
 %% Stress Factors
@@ -124,8 +104,8 @@ Ftan = Trated/(Di_s*0.5); % Newton
 surface_area = pi*Di_s*Length; % m^2
 % calculation of tangantial stress:
 StressTangent = 1e-3*Ftan/surface_area; % kPa
-fprintf('Tangential force is %g Newtons\n',Ftan);
-fprintf('Tangential stress is %g kPascals\n',StressTangent);
+fprintf('Tangential force: %g Newtons\n',Ftan);
+fprintf('Tangential stress: %g kPascals\n',StressTangent);
 % Resulting factor (Ftan_s: 23 kPa) is around given average value in figure:
 I = imread('shear stress.png');
 figure;
@@ -139,10 +119,10 @@ figure;
 imshow(I);
 title('Reasonable Flux Densities','FontSize',16,'FontWeight','Bold');
 Bgap = 0.75; % peak magnetic loading of air gap , T 
-fprintf('\nAir gap magnetic loading is: %g Tesla\n',Bgap);
+fprintf('\nAir gap magnetic loading: %g Tesla\n',Bgap);
 % Then the electric loading becomes 
-electric_loading = StressTangent/Bgap; % kA/m
-fprintf('Resultant electric loading is %g kA/m\n',electric_loading);
+electric_loading =sqrt(2)* StressTangent/Bgap; % kA/m
+fprintf('Resultant electric loading: %g kA/m\n',electric_loading);
 % Comparing with the reference values given in Table 6.3 in texbook
 I = imread('Electrical Loading.png');
 figure;
@@ -282,8 +262,8 @@ L_new=X*Di_s_new;
 Di_s=round(Di_s_new,3); % round up to 3 decimal places
 L_s=round(L_new,3);
 
-fprintf('Updated inner diameter of the stator is %g m\n',Di_s);
-fprintf('Updated length of the machine is %g m\n',Length);
+fprintf('Updated inner diameter of the stator: %g m\n',Di_s);
+fprintf('Updated length of the machine: %g m\n',Length);
 Bgap_actual = Vphase*pole/(4.44*Ns*fn*kw1*4*Length*Di_s*0.5); % Tesla
 Bgap=Bgap_actual;% Update Bgap
 Flux_PerPole = 2*Di_s*Length*Bgap_actual/pole; % weber
@@ -326,10 +306,10 @@ fprintf('The height of slot=%g mm\n',h_s*1e3);
 B_sbc=1.4;% Back core flux density
 % For the calculation of the height of the stator back iron or yoke (hcs),
 h_cs=Flux_PerPole/(2*Length*B_sbc);% m
-fprintf('The height of stator back iron is (h_cs) is %g mm\n',h_cs*1e3);
+fprintf('The height of stator back iron(h_cs): %g mm\n',h_cs*1e3);
 Do_s = (Di_s+2*(h_os+h_w+h_s+h_cs)); % m
 Do_s=round(Do_s,3); % round up to 3 decimal places
-fprintf('Outer diameter of the stator %g m\n',Do_s);
+fprintf('Outer diameter of the stator: %g m\n',Do_s);
 
 %% ROTOR SLOT DIMENSIONS
 % Rotor Bar Current Calculations pg320 in [1]
@@ -360,7 +340,7 @@ h_r=A_bar/1.2/d_r1;
 % Then, calculation of rotor back core height (h_cr):
 B_rbc=1.2;% Rotor back core flux density
 h_cr = Flux_PerPole/(2*Length*B_rbc); % m
-fprintf('The height of the rotor back iron (hcr) is %g mm\n',1e3*h_cr);
+fprintf('The height of the rotor back iron(hcr): %g mm\n',1e3*h_cr);
 Di_r=Di_s-2*(g+h_r+h_cr+d_r1+d_r2);
 Do_r=Di_s-2*g;
 %End Ring Dimensions
@@ -456,7 +436,7 @@ Pdr = 0.9*Tr/(kcs*g_eff)*1e-2; % permeance
 Kx = 1; % skin effect coefficient
 P2 = u0*Length*(Kx*Pr+Pdr); % permeance of rotor bar
 Lr_s = P2*4*(Ns*kw1)^2*m/Qr; % Henries, reflected to stator side
-fprintf('The rotor leakage inductance referred to the stator is %g uH\n',Lr_s*1e6);
+fprintf('The rotor leakage inductance referred to the stator: %g uH\n',Lr_s*1e6);
 
 %% Series Resistances of Stator&Rotor Windings
 % For the calculation of stator winding resistance of one phase, its length
@@ -465,8 +445,8 @@ Cu_span = CoilSpan*Ts; % Conductor span= Coil Span*Slot pitch
 Lend=1.2*Cu_span; % end winding length
 MLT_s = 2*(Length+Lend)+0.1; % m;
 % increase of MLT due to stranding ignored
-fprintf('The resultant end winding length is %g m\n',Lend);
-fprintf('The mean length turn (MLT) of stator is %g m\n',MLT_s);
+fprintf('The resultant end winding length: %g m\n',Lend);
+fprintf('The mean length turn (MLT) of stator: %g m\n',MLT_s);
 
 % Average winding temperature Tw taken as 75C
 rho_cu20 = 1.68*1e-8; % ohm*m
@@ -508,7 +488,7 @@ Length_Al1 = Qr*Length; % m
 Length_Al2=2*Qr*Length_ring; %Two rings, m
 V_Al = A_bar*Length_Al1 + A_ring*Length_Al2; % m^3
 M_Al=Aluminum_density*V_Al;
-fprintf('Total aluminium mass is %g kg\n',M_Al);
+fprintf('Total aluminium mass: %g kg\n',M_Al);
 % Stator iron (core) mass 
 
 M_ts    = Steel_density*Qs*b_ts*(h_s+h_w+h_os)*Length*Kfe; %Stator teeth mass, kg
@@ -550,7 +530,6 @@ fprintf('Total core loss @50Hz %g Watts.\n',Pcore);
 Rcore = Vphase^2/(Pcore/3); % Ohms
 fprintf('The core loss resistance: %g Ohms\n',Rcore);
 
-
 % Friction and Windage Losses
 % An rough estimation taken for Friction and Windage Losses.
 P_fw = 0.008*Pout_n; % watts
@@ -568,50 +547,154 @@ figure;
 imshow(I);
 title('Selected Frame for the Generator','FontSize',16,'FontWeight','Bold');
 
+%% COOLING
+I = imread('Cooling.png');
+figure;
+imshow(I);
+title('Cooling of the Machine','FontSize',16,'FontWeight','Bold');
+Emissivity=0.85; %Black Coated
+CaseLength=0.5;
+CaseDiameter=0.7;
+CaseSurface=2*pi*CaseDiameter*CaseLength*0.5;
+fprintf('Surface Area of the case: %4.2f m2\n',CaseSurface);
+% Radiation
+Prad=CaseSurface*0.85*5.67*1e-8*((273+Tsurf)^4-(273+Tamb)^4);
+fprintf('Radiated Heat: %4.2f W\n',Prad);
+% Heat Dissipation with conduction is also negligible
+
+% Convection
+CaseSurfaceFin=CaseSurface*5;
+% Calculation of Convection Coefficient Eqn 9.55
+Vair=7; % m/s blowed over the surface of the machine via a shaft mounted fan
+hconv=3.89*sqrt(Vair/CaseLength); %W/m2K
+fprintf('Convection Coefficient: %g W/m2K\n',hconv);
+Pconv=CaseSurfaceFin*(Tsurf-Tamb)*hconv;
+fprintf('Blowed Heat: %g W\n',Pconv);
+% Dissipated heat is not enough to satisfy machine losses
+% Designed should be revised for open case and/or Specified temperatures must be increased 
+
+
 %% TORQUE_SPEED CHARACTERISTICS
 % Obtain the variables that will be used in the torque equation:
 wsync = Nsync*2*pi/60; % rad/sec
 % Thevenin variables
 Zm = (1j*Xm*Rcore)/(1j*Xm+Rcore); % ohms
 Xs = 2*pi*fn*Ls; % ohms @ 50 Hz
-Xr_s=2*pi*fn*Lr_s; % ohms @ 50hz 
+Xr_s=1.5*2*pi*fn*Lr_s; % ohms @ 50hz 
 Zs = Rs_s+1j*Xs; % ohms
 Vth = Vphase*Zm/(Zs+Zm); % volts
 Zth = Zs*Zm/(Zs+Zm); % ohms
 Rth = real(Zth); % ohms
 Xth = imag(Zth); % ohms
 % Slip (and rotor speed) array
-s = 0.1:-0.01:-1;
+s = 0.05:-0.005:-0.5;
 Nr = Nsync*(1-s); % rpm
 wr = Nr*2*pi/60; % rad/sec
 % Torque array using the calculated variables and slip variation
-Tm = (3*abs(Vth)^2/wsync)*(1./ ( (Rth+Rs_r_s./s).^2 + (Xth+Xr_s)^2 ) ).*(Rs_r_s./s); % Nm
-Pm=wr.*Tm;
+Tm = (3*(abs(Vth))^2/wsync)*(1./ ( (Rth+Rs_r_s./s).^2 + (Xth+Xr_s)^2 ) ).*(Rs_r_s./s); % Nm
 % At synchronous speed, torque will be zero (avobe equation cannot calculate)
 Tm((s==0)) = 0; % Nm
+Pm=wr.*Tm;
 % Plot the torque-speed curve
 figure;
 hold on;
 xlabel('Rotor speed (rpm)','Fontweight','Bold');
 yyaxis left
-plot(Nr,1e-3*Tm,'k');
+plot(Nr,-1e-3*Tm,'b');
 ylabel('Torque (kNm)','Fontweight','Bold');
-ylim([-30 20])
+ylim([-20 30]);
+
 yyaxis right
-plot(Nr,1e-3*Pm,'r');
+plot(Nr,-1e-3*Pm,'r');
 ylabel('Power (kW)','Fontweight','Bold');
-ylim([-1e4 1e3])
+ylim([ -1e2 2.5e3]);
+
 title ('Torque-Speed Characteristic of the Machine','Fontweight','Bold');
 grid on;
 grid minor;
+hold off;
+
+%% FEA DRAWINGS AND CONCLUSIONS
+% In general, FEA results verify the analyctical calculations,
+% however, there is a significant difference between Torque-Speed
+% characteristics obtained by the two methods. Which is mainly caused by
+% the difference between rotor leakage reactance obtained by this two
+% methods. Analyticaly calculated leakage reactance value is almost half of
+% the simulation value.
+I = imread('RatedMagneticData.png');
+figure;
+imshow(I);
+title('Magnetic Data','FontSize',16,'FontWeight','Bold');
+
+I = imread('Material Consumption.png');
+figure;
+imshow(I);
+title('Material Consumption Data','FontSize',16,'FontWeight','Bold');
+
+I = imread('RatedPerformance.png');
+figure;
+imshow(I);
+title('Performance Indicators','FontSize',16,'FontWeight','Bold');
+
+I = imread('Rated Parameters.png');
+figure;
+imshow(I);
+title('Rated Parameters','FontSize',16,'FontWeight','Bold');
 
 
-hold on
+I = imread('T-P vs Speed in Generation Mode_RMxprt.png');
+figure;
+imshow(I);
+title('T-P vs Speed Charactristic of the Generator','FontSize',16,'FontWeight','Bold');
+
+I = imread('Efficiency_RMxprt.png');
+figure;
+imshow(I);
+title('Efficiency Curve of the Generator','FontSize',16,'FontWeight','Bold');
+
+I = imread('PowerFactor_RMxprt.png');
+figure;
+imshow(I);
+title('Power Factor Variation wrt Speed','FontSize',16,'FontWeight','Bold');
 
 
+% Operating point and efficiency curve of the designed machine is very
+% close to the specified values. Magnetic flux density values calculated by the simulation program 
+%are similar to the analytical values. However, air gap flux density has not a sinusoidal distribution 
+% as expected.
 
-%close all;
 
+I = imread('Air Gap Flux Density.png');
+figure;
+imshow(I);
+title('Air Gap Flux Density','FontSize',16,'FontWeight','Bold');
+
+I = imread('FluxDensity_Machine_Maxwell2D.png');
+figure;
+imshow(I);
+title('Flux Density Distribution of the Machine','FontSize',16,'FontWeight','Bold');
+
+I = imread('Bvector.png');
+figure;
+imshow(I);
+title('Magnetic Flux Density Orientation','FontSize',16,'FontWeight','Bold');
+
+I = imread('FluxDensity_Tooth_Maxwell2D.png');
+figure;
+imshow(I);
+title('Flux Density Distribution of the Tooth','FontSize',16,'FontWeight','Bold');
+
+I = imread('FluxDensity_Yoke_S_Maxwell2D.png');
+figure;
+imshow(I);
+title('Flux Density Distribution of the Stator Back Core','FontSize',16,'FontWeight','Bold');
+
+% To sum up, results show two mismatches: PF and dissipated heat both requies additonal study. 
+% At the and of this study, a valuable experience on a useful well-known FEA simulation software and
+% on the anatomy of an Asynchronous Machine. 
+
+%% REFERENCES
+% [1] Pyrhonen, J., Jokinen, T., & Hrabovcova, V. (2013). Design of rotating electrical machines. John Wiley & Sons.
 %[2] http://www.ti.com/lit/ml/slup125/slup125.pdf
-%[3] 
-%[4] http://www.regalbeloit.eu/catalogues/Insulation_Class_Explanantion.pdf
+%[3] http://www.regalbeloit.eu/catalogues/Insulation_Class_Explanantion.pdf
+

@@ -1,0 +1,1480 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>InductionGenerator</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-06-03"><meta name="DC.source" content="InductionGenerator.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">EE564 - Design of Electrical Machines</a></li><li><a href="#2">INTRODUCTION</a></li><li><a href="#3">Specifications of asynchronous squirrel cage induction motor</a></li><li><a href="#4">Design Procedure</a></li><li><a href="#5">Main Design Inputs</a></li><li><a href="#7">Machine Size</a></li><li><a href="#9">Stress Factors</a></li><li><a href="#11">Selection of stator slot number</a></li><li><a href="#13">Calculation of stator number of turns (Ns)</a></li><li><a href="#14">STATOR SLOT DIMENSIONS</a></li><li><a href="#15">ROTOR SLOT DIMENSIONS</a></li><li><a href="#16">todo Shaft Diameter</a></li><li><a href="#17">Calculation of Magnetization Current</a></li><li><a href="#18">Calculation of Magnetizing Inductance</a></li><li><a href="#19">Calculation of Leakage Inductances</a></li><li><a href="#20">Series Resistances of Stator&amp;Rotor Windings</a></li><li><a href="#21">Mass Calculations</a></li><li><a href="#22">POWER LOSSES</a></li><li><a href="#23">EFFICIENCY CALCULATION</a></li><li><a href="#24">FRAMING</a></li><li><a href="#25">COOLING</a></li><li><a href="#26">TORQUE_SPEED CHARACTERISTICS</a></li><li><a href="#27">FEA DRAWINGS AND CONCLUSIONS</a></li><li><a href="#28">REFERENCES</a></li></ul></div><h2 id="1">EE564 - Design of Electrical Machines</h2><pre class="codeinput"><span class="comment">%%Project-3: Induction Generator Design</span>
+<span class="comment">%%Name: Olcay BAY</span>
+<span class="comment">%%ID: 1673672</span>
+</pre><h2 id="2">INTRODUCTION</h2><p>In this project, design of a squirrel cage asynchronous generator for wind turbines will be performed</p><pre class="codeinput"><span class="comment">% circuit</span>
+<span class="comment">% # Calculation of stator to rotor turns ratio</span>
+<span class="comment">% # Torque-speed characteristics</span>
+<span class="comment">% # Determination of basic parameters like starting torque, maximum torque</span>
+<span class="comment">% # Motoranalysis</span>
+<span class="comment">% # Conclusions</span>
+<span class="comment">% # References</span>
+</pre><h2 id="3">Specifications of asynchronous squirrel cage induction motor</h2><p>Rated Power Output: 250 kW Line to line voltage: 400 V Power factor: 0.87 Rated Wind Speed: 14 m/s Rated Turbine Speed: 24.3 rpm Gear Ratio: 31.2 Frequency: 50 Hz Rated Speed: 758 rpm Gearbox: (Coupled from wind turbine blade) Insulation Class: F (Max. avg:145, Hotspot: 155 ) Duty: Continuous running duty (S1) Efficiency: IE2,  95-96% Ingress protection: IP54 Connection of motor windings:Y Ambient Temperature: 50C</p><h2 id="4">Design Procedure</h2><p>Design procedure is given by the following flowchart[1]:</p><pre class="codeinput">clear <span class="string">all</span>;
+clc;
+close <span class="string">all</span>;
+I = imread(<span class="string">'Design Procedure.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Shear Stress For Different Machines'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+</pre><img vspace="5" hspace="5" src="InductionGenerator_01.png" style="width:644px;height:705px;" alt=""> <h2 id="5">Main Design Inputs</h2><pre class="codeinput">Pout_n = 250e3;<span class="comment">% Nominal Output Power, watts</span>
+pole = 8;<span class="comment">%Pole Number</span>
+p = pole/2;<span class="comment">%Pole Pair</span>
+m = 3;<span class="comment">%Number of phases</span>
+Vn = 400; <span class="comment">% Nominal line voltage (l-l)</span>
+Vphase = Vn/sqrt(3); <span class="comment">% Nominal phase voltage</span>
+fn = 50; <span class="comment">%Nominal Frequency, Hz</span>
+Nsync = 120*fn/pole; <span class="comment">% rpm</span>
+Nrated = 758; <span class="comment">%Nominal rotor speed, rpm</span>
+gear_ratio = 31.2; <span class="comment">%</span>
+pf_expected = 0.86; <span class="comment">%</span>
+n_expected = 0.95; <span class="comment">%</span>
+<span class="comment">%</span>
+u0 = 4*pi*1e-7;
+Tsurf=90; <span class="comment">%Machine Surfeace Temperature</span>
+Tamb=50; <span class="comment">% Ambient Temperature, Worst Case</span>
+Tw=100; <span class="comment">% Average winding temperature</span>
+Kfe=0.95; <span class="comment">% Lamination Factor, for the selected lamination</span>
+<span class="comment">%</span>
+</pre><h2 id="7">Machine Size</h2><pre class="codeinput">Sout_expected=Pout_n/pf_expected;<span class="comment">%Expected apparent output power</span>
+Pmec = Pout_n/n_expected; <span class="comment">% watts</span>
+Irated = Sout_expected/(sqrt(3)*Vn); <span class="comment">% amps</span>
+omega_rot = Nrated*2*pi/60; <span class="comment">% rated angular speed of rotor, rad/sec</span>
+Trated = Pmec/omega_rot; <span class="comment">% Rated torque,</span>
+Power_pp=Pout_n/p; <span class="comment">% Power per pole-pair, watts</span>
+<span class="comment">% Power_pp:62500, p:4  from graph given below, Cmech between 200-250.</span>
+I = imread(<span class="string">'Cmec.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Specific Machine Constant (Cmec) vs power/pole-pair'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+<span class="comment">%taken as</span>
+Cmech = 220; <span class="comment">% kWs/m^3</span>
+<span class="comment">% Calculation of the aspect ratio</span>
+X = (pi/pole)*(p)^(1/3); <span class="comment">% aspect ratio</span>
+fprintf(<span class="string">'Aspect ratio: %g\n'</span>,X);
+<span class="comment">% diameter^2*length can be calculated by using the Cmec relation:</span>
+D2L = Pout_n*1e-3/(Cmech*(Nsync/60)); <span class="comment">%</span>
+<span class="comment">% From these two information, the inner diameter and length can be calculated:</span>
+Di_s = (D2L/X)^(1/3); <span class="comment">% Stator inner diameter, m</span>
+Di_s=round(Di_s,3); <span class="comment">% round up to 3 decimal places</span>
+Length = Di_s*X; <span class="comment">% Rotor-Stator Length, m</span>
+Length=round(Length,3); <span class="comment">% round up to 3 decimal places</span>
+<span class="comment">% For a 8 pole machine, outer diameter of the stator can be found using:</span>
+<span class="comment">% [T.Miller - Electric Machine Design Course, Lecture-5, Slide4]</span>
+<span class="comment">% The air gap calculation a scale factor of 1.6 is added for heavy duty operation.</span>
+g = 1e-3*1.6*(0.18+0.006*Pout_n^0.4); <span class="comment">% m</span>
+g=  round(g, 4); <span class="comment">% round up to 4 decimal places</span>
+fprintf(<span class="string">'Inner diameter of the stator: %g m\n'</span>,Di_s);
+fprintf(<span class="string">'Length of the machine: %g m\n'</span>,Length);
+fprintf(<span class="string">'Air gap distance: %g mm\n\n'</span>,g);
+</pre><pre class="codeoutput">Aspect ratio: 0.623371
+Inner diameter of the stator: 0.526 m
+Length of the machine: 0.328 m
+Air gap distance: 0.0017 mm
+
+</pre><img vspace="5" hspace="5" src="InductionGenerator_02.png" style="width:834px;height:566px;" alt=""> <h2 id="9">Stress Factors</h2><p>Calculation of the tangential force using rated torque:</p><pre class="codeinput">Ftan = Trated/(Di_s*0.5); <span class="comment">% Newton</span>
+surface_area = pi*Di_s*Length; <span class="comment">% m^2</span>
+<span class="comment">% calculation of tangantial stress:</span>
+StressTangent = 1e-3*Ftan/surface_area; <span class="comment">% kPa</span>
+fprintf(<span class="string">'Tangential force: %g Newtons\n'</span>,Ftan);
+fprintf(<span class="string">'Tangential stress: %g kPascals\n'</span>,StressTangent);
+<span class="comment">% Resulting factor (Ftan_s: 23 kPa) is around given average value in figure:</span>
+I = imread(<span class="string">'shear stress.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Shear Stress For Different Machines'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+<span class="comment">%---------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="comment">% The magnetic loading of the machine is selected from the table 6.2 of textbook</span>
+
+I = imread(<span class="string">'Permitted Flux Densities.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Reasonable Flux Densities'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+Bgap = 0.75; <span class="comment">% peak magnetic loading of air gap , T</span>
+fprintf(<span class="string">'\nAir gap magnetic loading: %g Tesla\n'</span>,Bgap);
+<span class="comment">% Then the electric loading becomes</span>
+electric_loading =sqrt(2)* StressTangent/Bgap; <span class="comment">% kA/m</span>
+fprintf(<span class="string">'Resultant electric loading: %g kA/m\n'</span>,electric_loading);
+<span class="comment">% Comparing with the reference values given in Table 6.3 in texbook</span>
+I = imread(<span class="string">'Electrical Loading.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'current densities(J) and linear current densities(A) for various electrical machines'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+<span class="comment">% As seen, resulting value is acceptable</span>
+</pre><pre class="codeoutput">Tangential force: 12605.6 Newtons
+Tangential stress: 23.257 kPascals
+
+Air gap magnetic loading: 0.75 Tesla
+Resultant electric loading: 43.8538 kA/m
+</pre><img vspace="5" hspace="5" src="InductionGenerator_03.png" style="width:898px;height:474px;" alt=""> <img vspace="5" hspace="5" src="InductionGenerator_04.png" style="width:734px;height:413px;" alt=""> <img vspace="5" hspace="5" src="InductionGenerator_05.png" style="width:736px;height:570px;" alt=""> <h2 id="11">Selection of stator slot number</h2><p>Stator winding is decided to be a double layer winding,</p><pre class="codeinput"><span class="comment">%stator slot pitch for asynchronous machines is typically in the range of 7-45 mm</span>
+<span class="comment">% Then minimum and maximum number of slots can be calculated by:</span>
+StatorInnerCircumference = pi*Di_s; <span class="comment">% m</span>
+Qs_max = floor(StatorInnerCircumference/0.007);
+Qs_min = ceil(StatorInnerCircumference/0.045);
+fprintf(<span class="string">'Possible stator slot numbers: %g -%g \n'</span>,Qs_min,Qs_max);
+<span class="comment">% Then possible stator slot numbers resulting an integer slot machine</span>
+<span class="comment">%can be found by</span>
+k=1;
+Qs=0;
+qs=1;
+fprintf(<span class="string">'Possible stator slot numbers(Qs) and resulting qs values:\n'</span>);
+<span class="keyword">while</span> (Qs&lt;Qs_max)
+    Qs=m*pole*qs;
+    <span class="keyword">if</span> (Qs&gt;Qs_min&amp;&amp;Qs&lt;Qs_max)
+        fprintf(<span class="string">' Qs=%d, qs = %d\n'</span>,Qs,qs);
+    <span class="keyword">end</span>
+    qs=qs+1;
+<span class="keyword">end</span>
+
+<span class="comment">% In order to construct a smooth MMF waveform, a large Qs is desirable,</span>
+<span class="comment">% Considering manufacturing difficulties, 96 or 120 would be optimal choice</span>
+<span class="comment">% As a starting point Qs taken as 96</span>
+Qs=96;
+
+qs=Qs/m/pole;
+<span class="comment">%for pole&gt;4 recomended rotor slot number,Qr given by Qr=1.2Qs (from lecture notes)</span>
+Qr=round(1.2*Qs);
+Qr=Qr-mod(Qr,2); <span class="comment">% Odd values may cause vibration</span>
+FullSpan=Qs/pole;
+CoilSpan=FullSpan;
+
+fprintf(<span class="string">' Selected slot numbera Qs=%d, qs=%d, Qr=%d\n'</span>,Qs,qs,Qr);
+<span class="comment">%However Qr must be checked in order to prevent unwanted Qs-Qr pairs causing slot harmonics:</span>
+<span class="keyword">if</span> ( Qr==(Qs+2*p) ||  Qr==(Qs-2*p) || Qr==(2*Qs+2*p) || Qr==(2*Qs-2*p) ||  Qr==(Qs+p) || Qr==(Qs-p) ||   Qr==(0.5*Qs+p) || Qr==(0.5*Qs-p)    )
+        fprintf(<span class="string">' -----------------------------------improper Qs-Qr pair!!! \n'</span>);
+<span class="keyword">end</span>
+fprintf(<span class="string">'---------------------------------------------------------\n'</span>);
+
+
+ <span class="comment">%Then for two layer winding,</span>
+PitchRatio=1;
+fprintf(<span class="string">'\n\nWinding factors for full span coil:  \n'</span>);
+
+<span class="keyword">for</span> HarmonicOrder=1:2:13
+    SlotAngle=(2*pi/(Qs/p));<span class="comment">%  radians</span>
+    kd=sin(qs*HarmonicOrder*(SlotAngle*0.5)) / (  qs*sin(HarmonicOrder*(SlotAngle*0.5)) );
+    kp=sin(HarmonicOrder*pi/2*PitchRatio);
+    kw=kp*kd;
+    <span class="keyword">if</span> mod(HarmonicOrder,3)&gt;0
+            fprintf(<span class="string">'kd%d=%4.3f, kp%d=%4.3f,  kw%d=%4.3f\n'</span>,HarmonicOrder,kd, HarmonicOrder,kp, HarmonicOrder, kw);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+CoilSpan=FullSpan-1;
+PitchRatio=CoilSpan/FullSpan;
+fprintf(<span class="string">'\n\nWinding Factors for a coil span of %d/%d: \n'</span>,CoilSpan, FullSpan);
+<span class="keyword">for</span> HarmonicOrder=1:2:13
+    SlotAngle=(2*pi/(Qs/p));<span class="comment">%  radians</span>
+    kd=sin(qs*HarmonicOrder*(SlotAngle*0.5)) / (  qs*sin(HarmonicOrder*(SlotAngle*0.5)) );
+    kp=sin(HarmonicOrder*pi/2*PitchRatio);
+    kw=kp*kd;
+    <span class="keyword">if</span> mod(HarmonicOrder,3)&gt;0
+            fprintf(<span class="string">'kd%d=%4.3f, kp%d=%4.3f,  kw%d=%4.3f\n'</span>,HarmonicOrder,kd, HarmonicOrder,kp, HarmonicOrder, kw);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+CoilSpan=FullSpan-2;
+PitchRatio=CoilSpan/FullSpan;
+
+fprintf(<span class="string">'\n\nWinding Factors for a coil span of %d/%d: \n'</span>,CoilSpan, FullSpan);
+
+<span class="keyword">for</span> HarmonicOrder=1:2:13
+    SlotAngle=(2*pi/(Qs/p));<span class="comment">%  radians</span>
+    kd=sin(qs*HarmonicOrder*(SlotAngle*0.5)) / (  qs*sin(HarmonicOrder*(SlotAngle*0.5)) );
+    kp=sin(HarmonicOrder*pi/2*PitchRatio);
+    kw=kp*kd;
+    <span class="keyword">if</span> mod(HarmonicOrder,3)&gt;0
+            fprintf(<span class="string">'kd%d=%4.3f, kp%d=%4.3f,  kw%d=%4.3f\n'</span>,HarmonicOrder,kd, HarmonicOrder,kp, HarmonicOrder, kw);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Possible stator slot numbers: 37 -236 
+Possible stator slot numbers(Qs) and resulting qs values:
+ Qs=48, qs = 2
+ Qs=72, qs = 3
+ Qs=96, qs = 4
+ Qs=120, qs = 5
+ Qs=144, qs = 6
+ Qs=168, qs = 7
+ Qs=192, qs = 8
+ Qs=216, qs = 9
+ Selected slot numbera Qs=96, qs=4, Qr=114
+---------------------------------------------------------
+
+
+Winding factors for full span coil:  
+kd1=0.958, kp1=1.000,  kw1=0.958
+kd5=0.205, kp5=1.000,  kw5=0.205
+kd7=-0.158, kp7=-1.000,  kw7=0.158
+kd11=-0.126, kp11=-1.000,  kw11=0.126
+kd13=0.126, kp13=1.000,  kw13=0.126
+
+
+Winding Factors for a coil span of 11/12: 
+kd1=0.958, kp1=0.991,  kw1=0.949
+kd5=0.205, kp5=0.793,  kw5=0.163
+kd7=-0.158, kp7=-0.609,  kw7=0.096
+kd11=-0.126, kp11=-0.131,  kw11=0.016
+kd13=0.126, kp13=-0.131,  kw13=-0.016
+
+
+Winding Factors for a coil span of 10/12: 
+kd1=0.958, kp1=0.966,  kw1=0.925
+kd5=0.205, kp5=0.259,  kw5=0.053
+kd7=-0.158, kp7=0.259,  kw7=-0.041
+kd11=-0.126, kp11=0.966,  kw11=-0.122
+kd13=0.126, kp13=-0.966,  kw13=-0.122
+</pre><p>When compared to full-pitch coil span, 10/12  seems to provide optimum attenuation values for harmonics the 5th harmonic and 7th harmonics are almost eliminated. 3rd harmonic and multiples will be eliminated on the line-to-line voltages.</p><pre class="codeinput"><span class="comment">%However, elimination of harmonics with distribution and  fractional pitch</span>
+<span class="comment">%factor resulted in approximately 8% loss on the fundamental component</span>
+<span class="comment">% This can be easily compansated increasing the number of stator turns or by increasing pole area</span>
+CoilSpan=FullSpan-2;
+PitchRatio=CoilSpan/FullSpan;
+fprintf(<span class="string">'---------------------------------------------------------\n'</span>);
+fprintf(<span class="string">'Selected coil span: %d/%d: \n'</span>,CoilSpan, FullSpan);
+kd1=sin(qs*(SlotAngle*0.5)) / (  qs*sin(SlotAngle*0.5) );
+kp1=sin(pi/2*PitchRatio);
+kw1=kp1*kd1;
+fprintf(<span class="string">'---------------------------------------------------------\n'</span>);
+</pre><pre class="codeoutput">---------------------------------------------------------
+Selected coil span: 10/12: 
+---------------------------------------------------------
+</pre><h2 id="13">Calculation of stator number of turns (Ns)</h2><p>Under the rated phase voltage, required number of series turns in a phase can be found using expected air gap flux and determined machine dimensions and winding factor: pole flux 2/pi*Bpeak*Ts*Length</p><pre class="codeinput">Flux_PerPole = 2*Di_s*Length*Bgap/pole; <span class="comment">% weber</span>
+Ns = Vphase/(4.44*fn*Flux_PerPole*kw1);
+<span class="comment">% number of conductorsin a phase:</span>
+Ns_cu=Ns*2;
+fprintf(<span class="string">'required number of series turns in a phase,Ns : %g\n'</span>, Ns);
+<span class="comment">% For a double layer winding</span>
+SemiSlotPerPhase=2*Qs/m;
+<span class="comment">% Then the number of turns per semi slot (SzQ) can be found by:</span>
+SzQ = round(Ns_cu/SemiSlotPerPhase);
+zQs= SzQ*2;
+fprintf(<span class="string">'number of series conductors  in a slot,zQ: %g\n'</span>, zQs);
+Ns_old=Ns;
+Ns=zQs*p*qs;
+fprintf(<span class="string">'----updated Ns:%g\n'</span>, Ns);
+
+<span class="comment">% Resulting winding diagram is given in figure:</span>
+I = imread(<span class="string">'Winding Diagram.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Stator Winding Diagram'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+
+<span class="comment">% Although updated Ns is very close to calculated value, in order to keep air gap flux density at desired level,</span>
+<span class="comment">% Machine dimensions must be scaled accordingly:</span>
+Di_s_new=sqrt(Di_s^2*X*Ns_old/(X*Ns));
+L_new=X*Di_s_new;
+Di_s=round(Di_s_new,3); <span class="comment">% round up to 3 decimal places</span>
+L_s=round(L_new,3);
+
+fprintf(<span class="string">'Updated inner diameter of the stator: %g m\n'</span>,Di_s);
+fprintf(<span class="string">'Updated length of the machine: %g m\n'</span>,Length);
+Bgap_actual = Vphase*pole/(4.44*Ns*fn*kw1*4*Length*Di_s*0.5); <span class="comment">% Tesla</span>
+Bgap=Bgap_actual;<span class="comment">% Update Bgap</span>
+Flux_PerPole = 2*Di_s*Length*Bgap_actual/pole; <span class="comment">% weber</span>
+Ns = Vphase/(4.44*fn*Flux_PerPole*kw1);
+Ts=pi*Di_s/Qs; <span class="comment">%Slot pitch</span>
+<span class="comment">%for simplicity initially saturation factor taken as 1</span>
+</pre><pre class="codeoutput">required number of series turns in a phase,Ns : 34.764
+number of series conductors  in a slot,zQ: 2
+----updated Ns:32
+Updated inner diameter of the stator: 0.548 m
+Updated length of the machine: 0.328 m
+</pre><img vspace="5" hspace="5" src="InductionGenerator_06.png" style="width:623px;height:596px;" alt=""> <h2 id="14">STATOR SLOT DIMENSIONS</h2><pre class="codeinput">I = imread(<span class="string">'Stator Slot Dimensions.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Stator Slot Dimensions'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+<span class="comment">% MMF calculation is important to check whether the air gap flux density</span>
+
+Js=5e6;  <span class="comment">%current density for stator (A/m2)</span>
+A_Cu=Irated/Js;  <span class="comment">%required copper cross section (mm2)</span>
+<span class="comment">%Skin depth for Copper at %50 Hz 10mm, copper diameter must be smaller than</span>
+<span class="comment">%20mm, considering slot opening:</span>
+dcu=2.91e-3;  <span class="comment">%wire diameter (m)</span>
+fprintf(<span class="string">'\n\nwire diameter(stator) %g(mm)-AWG9\n'</span>,dcu*1e3);
+Strands= ceil(A_Cu/(pi*dcu*dcu/4));
+fprintf(<span class="string">'Number of strands=%g\n'</span>,Strands);
+A_Cu=Strands*pi*(dcu/2)^2; <span class="comment">% updated</span>
+Kf=0.3; <span class="comment">%copper fill factor</span>
+Ass=A_Cu/Kf; <span class="comment">% Slot area, mm2</span>
+fprintf(<span class="string">'Slot Area=%g mm2\n'</span>,Ass*1e6);
+
+B_ts=1.5; <span class="comment">% Average tooth flux From Table 6.2 (1.4T-2.1T)</span>
+b_os=3e-3; <span class="comment">%m, slot opening typically selected as 3mm opening must allow wire insertion during manufacturing</span>
+h_os=1e-3;<span class="comment">%m</span>
+h_w=1e-3;<span class="comment">%m</span>
+b_ts=((Bgap*Ts)/(Kfe*B_ts)) ;<span class="comment">% stator tooth width, bds,m</span>
+b_s1=(pi*(Di_s+2*(h_os+h_w))/Qs)-(b_ts); <span class="comment">% b4 (book notation)</span>
+b_s2 = 1.2*b_s1; <span class="comment">% from FEA model                                                                                                           !!!!!</span>
+h_s=2*Ass/(b_s1+b_s2);
+fprintf(<span class="string">'The height of slot=%g mm\n'</span>,h_s*1e3);
+
+<span class="comment">% Outer diameter of machine typically defined as 1.66*inner diameter for an</span>
+<span class="comment">% 8 pole machine, however a more optimum selection can be obtained as</span>
+B_sbc=1.4;<span class="comment">% Back core flux density</span>
+<span class="comment">% For the calculation of the height of the stator back iron or yoke (hcs),</span>
+h_cs=Flux_PerPole/(2*Length*B_sbc);<span class="comment">% m</span>
+fprintf(<span class="string">'The height of stator back iron(h_cs): %g mm\n'</span>,h_cs*1e3);
+Do_s = (Di_s+2*(h_os+h_w+h_s+h_cs)); <span class="comment">% m</span>
+Do_s=round(Do_s,3); <span class="comment">% round up to 3 decimal places</span>
+fprintf(<span class="string">'Outer diameter of the stator: %g m\n'</span>,Do_s);
+</pre><pre class="codeoutput">
+
+wire diameter(stator) 2.91(mm)-AWG9
+Number of strands=13
+Slot Area=288.203 mm2
+The height of slot=31.866 mm
+The height of stator back iron(h_cs): 38.2656 mm
+Outer diameter of the stator: 0.692 m
+</pre><img vspace="5" hspace="5" src="InductionGenerator_07.png" style="width:563px;height:383px;" alt=""> <h2 id="15">ROTOR SLOT DIMENSIONS</h2><p>Rotor Bar Current Calculations pg320 in [1]</p><pre class="codeinput">I = imread(<span class="string">'Rotor Slot Dimensions.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Rotor Slot Dimensions'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+
+Ir=zQs*Qs/Qr*Irated*pf_expected;
+Iring=Ir/(2*sin(pi*p/Qr));
+Jr=4*1e6;  <span class="comment">%current density for rotor bar (A/m2)</span>
+Jring=4*1e6;  <span class="comment">%current density for rotor bar (A/m2)</span>
+A_bar=Ir/Jr; <span class="comment">% Rotor Bar Crossection, m2</span>
+A_ring=Iring/Jring; <span class="comment">% Rotor Bar Crossection, m2</span>
+Tr=(pi*(Di_s-(2*g)))/Qr; <span class="comment">% Rotor slot pitch, m</span>
+B_tr=1.6 ;<span class="comment">%T, Rotor tooth flux density</span>
+b_tr=Bgap*Tr/(B_tr*Kfe) ;<span class="comment">%Rotor tooth width to prevent rotor flux density from saturization</span>
+
+<span class="comment">% Typical values assigned for slot opening and tooth hat</span>
+h_or = 2*1e-3; <span class="comment">% m</span>
+b_or = 2*1e-3; <span class="comment">% m</span>
+<span class="comment">% upper diameter and lower diameter of the slot can be approximated as</span>
+d_r1=Tr-b_tr;
+d_r2=0.5*d_r1;
+<span class="comment">%approximating tear-shaped bar as a triangle with a safety factor of 1.2, Ar= (h_r*(2*d_r1)/2*1.2</span>
+h_r=A_bar/1.2/d_r1;
+<span class="comment">% Flux path in the rotor follows a similar behaviour as in the stator</span>
+<span class="comment">% Then, calculation of rotor back core height (h_cr):</span>
+B_rbc=1.2;<span class="comment">% Rotor back core flux density</span>
+h_cr = Flux_PerPole/(2*Length*B_rbc); <span class="comment">% m</span>
+fprintf(<span class="string">'The height of the rotor back iron(hcr): %g mm\n'</span>,1e3*h_cr);
+Di_r=Di_s-2*(g+h_r+h_cr+d_r1+d_r2);
+Do_r=Di_s-2*g;
+<span class="comment">%End Ring Dimensions</span>
+h_ring=h_r+0.5*(d_r1+d_r2);
+w_ring=A_ring/h_ring;
+</pre><pre class="codeoutput">The height of the rotor back iron(hcr): 44.6432 mm
+</pre><img vspace="5" hspace="5" src="InductionGenerator_08.png" style="width:451px;height:334px;" alt=""> <h2 id="16">todo Shaft Diameter</h2><h2 id="17">Calculation of Magnetization Current</h2><pre class="codeinput">I = imread(<span class="string">'Core Material.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Properties of the Selected Core Material'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+<span class="comment">%--</span>
+<span class="comment">% Curve Fitting function for H-B curve</span>
+x=[0,10,25,50,100]; <span class="comment">% From material catalog</span>
+y=[0.0,1.5,1.59, 1.68, 1.80];
+x=1e2*transpose(x);
+y=transpose(y);
+HBCurve=fit(x,y,<span class="string">'linearinterp'</span>);
+plot(HBCurve,x,y);
+BHCurve=fit(y,x,<span class="string">'linearinterp'</span>);
+
+<span class="comment">%--</span>
+<span class="comment">%Carters Coefficient calculation for Stator</span>
+be = b_os*(b_os/g)/(5+b_os/g);
+kcs = Ts/(Ts-be);
+<span class="comment">%--</span>
+<span class="comment">%Carters Coefficient calculation for Rotor</span>
+be = b_or*(b_or/g)/(5+b_or/g);
+kcr = Tr/(Tr-be);
+kc=kcs*kcr;
+fprintf(<span class="string">'\n\nCarter Coefficient=%g\n'</span>,kc);
+g_eff = g*kc;
+<span class="comment">%--TODO Add Cooling Duct</span>
+<span class="comment">%--</span>
+H_gap=Bgap/u0;
+MMF_gap=H_gap*g_eff;
+fprintf(<span class="string">'H of the air gap: %g A/m\n'</span>,H_gap);
+fprintf(<span class="string">'MMF(peak) on the air gap: %g A\n'</span>,MMF_gap);
+<span class="comment">% The stator teeth MMF and back iron MMF can be calculated by using the</span>
+<span class="comment">% selected tooth and yoke flux density.</span>
+H_ts = BHCurve(B_ts); <span class="comment">% A/m</span>
+MMF_ts = H_ts*(h_s+h_os+h_w); <span class="comment">% Amps</span>
+fprintf(<span class="string">'H of the stator teeth: %g A/m\n'</span>,H_ts);
+fprintf(<span class="string">'MMF(peak) on the stator teeth: %g A\n'</span>,MMF_ts);
+H_sbc = BHCurve(B_sbc); <span class="comment">% A/m</span>
+MMF_sbc = H_sbc*h_cs; <span class="comment">% Amps</span>
+fprintf(<span class="string">'H stator back core: %g A/m\n'</span>,H_sbc);
+fprintf(<span class="string">'MMF(peak) on the stator back core: %g A\n'</span>,MMF_sbc);
+
+<span class="comment">% Same B-H data can be used. The rotor teeth MMF and back iron MMF can be</span>
+<span class="comment">% calculated by using the selected tooth and yoke flux density.</span>
+H_tr = BHCurve(B_tr); <span class="comment">% A/m</span>
+MMF_tr = H_tr*(h_r+h_or+(d_r1+d_r2)/2); <span class="comment">% Amps</span>
+fprintf(<span class="string">'H of the rotor teeth: %g A/m\n'</span>,H_tr);
+fprintf(<span class="string">'MMF(peak) on the rotor teeth: %g A.\n'</span>,MMF_tr);
+H_rbc = BHCurve(B_rbc); <span class="comment">% A/m</span>
+MMF_rbc = H_rbc*(h_cr); <span class="comment">% Amps</span>
+fprintf(<span class="string">'H of the rotor back core:%g A/m.\n'</span>,H_rbc);
+fprintf(<span class="string">'MMF(peak) on the rotor back core: %g A\n'</span>,MMF_rbc);
+Peak_MMF=MMF_gap+MMF_ts+MMF_sbc+MMF_tr+MMF_rbc;
+Imag=Peak_MMF/(4/pi*(m/2)*(Ns/pole)*kw1*sqrt(2)); <span class="comment">% amps</span>
+fprintf(<span class="string">'Magnetizing current %g Amps(rms)\n'</span>,Imag);
+</pre><pre class="codeoutput">
+
+Carter Coefficient=1.07286
+H of the air gap: 622352 A/m
+MMF(peak) on the air gap: 1135.09 A
+H of the stator teeth: 1000 A/m
+MMF(peak) on the stator teeth: 33.866 A
+H stator back core: 933.333 A/m
+MMF(peak) on the stator back core: 35.7146 A
+H of the rotor teeth: 2777.78 A/m
+MMF(peak) on the rotor teeth: 69.005 A.
+H of the rotor back core:800 A/m.
+MMF(peak) on the rotor back core: 35.7146 A
+Magnetizing current 131.02 Amps(rms)
+</pre><img vspace="5" hspace="5" src="InductionGenerator_09.png" style="width:747px;height:379px;" alt=""> <h2 id="18">Calculation of Magnetizing Inductance</h2><p>Assuming all 8 poles are identical physically,</p><pre class="codeinput"><span class="comment">%Then, we can accept that the all windings belong to the same phase link same flux</span>
+<span class="comment">% However, since 2/m of the pole flux related/created by individual phase</span>
+<span class="comment">% currents,</span>
+<span class="comment">% Equivalent circuit magnetizing current can be expressed as</span>
+
+Lm=Ns*2/m*Flux_PerPole/Imag;
+Xm = 2*pi*fn*Lm; <span class="comment">% Ohms</span>
+<span class="comment">% Validation</span>
+Imag2 = Vphase/(Xm); <span class="comment">% amps</span>
+fprintf(<span class="string">'Magnetizing inductance (phase) %g mH\n'</span>,Lm*1e3);
+</pre><pre class="codeoutput">Magnetizing inductance (phase) 5.7222 mH
+</pre><h2 id="19">Calculation of Leakage Inductances</h2><p>Calculation of stator leakage inductance is based on the equations derived in class</p><pre class="codeinput"><span class="comment">% Calculation of stator leakage inductance is again based on the equation</span>
+<span class="comment">% derived in class. The leakage reactance is also calculated at rated</span>
+<span class="comment">% frequency.</span>
+P_s = u0*Length*((h_os/b_os)+(h_s/(3*b_s2))); <span class="comment">% permeance</span>
+Ls = P_s*4*(Ns*kw1)^2*m/Qs; <span class="comment">% Henries</span>
+fprintf(<span class="string">'\n\nThe stator leakage inductance of the machine %g uH\n'</span>,Ls*1e6);
+<span class="comment">% Calculation of rotor leakage inductance is a little more tricky because</span>
+<span class="comment">% both rotor bar and end ring permeances are considered this time.</span>
+<span class="comment">% The leakage reactance is also calculated at rated frequency.</span>
+Pr = 0.66 + 2*h_r/(3*(d_r1+d_r2)) + h_or/b_or; <span class="comment">% permeance</span>
+Pdr = 0.9*Tr/(kcs*g_eff)*1e-2; <span class="comment">% permeance</span>
+Kx = 1; <span class="comment">% skin effect coefficient</span>
+P2 = u0*Length*(Kx*Pr+Pdr); <span class="comment">% permeance of rotor bar</span>
+Lr_s = P2*4*(Ns*kw1)^2*m/Qr; <span class="comment">% Henries, reflected to stator side</span>
+fprintf(<span class="string">'The rotor leakage inductance referred to the stator: %g uH\n'</span>,Lr_s*1e6);
+</pre><pre class="codeoutput">
+
+The stator leakage inductance of the machine 63.6501 uH
+The rotor leakage inductance referred to the stator: 106.097 uH
+</pre><h2 id="20">Series Resistances of Stator&amp;Rotor Windings</h2><p>For the calculation of stator winding resistance of one phase, its length is first calculated considering both machine length and end windings.</p><pre class="codeinput">Cu_span = CoilSpan*Ts; <span class="comment">% Conductor span= Coil Span*Slot pitch</span>
+Lend=1.2*Cu_span; <span class="comment">% end winding length</span>
+MLT_s = 2*(Length+Lend)+0.1; <span class="comment">% m;</span>
+<span class="comment">% increase of MLT due to stranding ignored</span>
+fprintf(<span class="string">'The resultant end winding length: %g m\n'</span>,Lend);
+fprintf(<span class="string">'The mean length turn (MLT) of stator: %g m\n'</span>,MLT_s);
+
+<span class="comment">% Average winding temperature Tw taken as 75C</span>
+rho_cu20 = 1.68*1e-8; <span class="comment">% ohm*m</span>
+rho_cuTw = rho_cu20*(1+0.00386*(Tw-20)); <span class="comment">% ohm*m</span>
+Rs_sdc = rho_cuTw*MLT_s*Ns/A_Cu; <span class="comment">% ohms</span>
+Rs_s = Rs_sdc; <span class="comment">% Since the conductor is stranded AC resistance can be taken equal to Rs_dc</span>
+fprintf(<span class="string">'The AC resiatance of the stator phase winding: %g mOhms\n'</span>,Rs_s*1e3);
+
+<span class="comment">% % The calculation of rotor bar resistance .</span>
+rho_Al20 = 2.65*1e-8; <span class="comment">% ohm*m</span>
+rho_AlTw = rho_Al20*(1+.00429*(Tw-20)); <span class="comment">% ohm*m</span>
+del_Al=sqrt(rho_AlTw/(pi*fn*u0));
+fprintf(<span class="string">'Skin depth of rotor bars at operating Temperature: %g mm\n'</span>,del_Al*1e3);
+<span class="comment">% As the diameter of rotor bar thicknes close to skin depth from [2],</span>
+<span class="comment">% Rac/Rdc can be taken as 1;</span>
+Kr = 1; <span class="comment">%Rac/Rdc</span>
+<span class="comment">%Calculation of resistance of the individual rotor bars.</span>
+R_bar=Kr*rho_AlTw*Length/A_bar;
+<span class="comment">%Calculation of resistance of the part of the ring belonging to one bar.</span>
+Length_ring = pi*(Do_r-h_or-d_r1)/Qr; <span class="comment">% approximately, m</span>
+R_ring=Length_ring*rho_AlTw/A_ring;
+<span class="comment">% Eqn 7.46 from textbook</span>
+Rs_r = R_bar + R_ring/(2*(sin(pi*p/Qr))^2);
+Rs_r_s = Rs_r*4*m/Qr*(Ns*kw1)^2; <span class="comment">% referred to primary,ohms</span>
+fprintf(<span class="string">'The rotor resistance referred to the stator: %g mOhms\n'</span>,Rs_r_s*1e3);
+</pre><pre class="codeoutput">The resultant end winding length: 0.215199 m
+The mean length turn (MLT) of stator: 1.1864 m
+The AC resiatance of the stator phase winding: 9.65481 mOhms
+Skin depth of rotor bars at operating Temperature: 13.4285 mm
+The rotor resistance referred to the stator: 9.98516 mOhms
+</pre><h2 id="21">Mass Calculations</h2><p>Copper mass</p><pre class="codeinput">Copper_density = 8.96*1e3; <span class="comment">% kg/m^3</span>
+Aluminum_density=2.70*1e3; <span class="comment">% kg/m^3</span>
+Steel_density = 7.8*1e3; <span class="comment">% kg/m^3</span>
+Length_Cu = m*MLT_s*Ns; <span class="comment">% m</span>
+V_Cu = A_Cu*Length_Cu; <span class="comment">% m^3</span>
+M_Cu = Copper_density*V_Cu; <span class="comment">% kg</span>
+fprintf(<span class="string">'Total copper mass: %g kg\n'</span>,M_Cu);
+<span class="comment">% Aluminium mass</span>
+Length_Al1 = Qr*Length; <span class="comment">% m</span>
+Length_Al2=2*Qr*Length_ring; <span class="comment">%Two rings, m</span>
+V_Al = A_bar*Length_Al1 + A_ring*Length_Al2; <span class="comment">% m^3</span>
+M_Al=Aluminum_density*V_Al;
+fprintf(<span class="string">'Total aluminium mass: %g kg\n'</span>,M_Al);
+<span class="comment">% Stator iron (core) mass</span>
+
+M_ts    = Steel_density*Qs*b_ts*(h_s+h_w+h_os)*Length*Kfe; <span class="comment">%Stator teeth mass, kg</span>
+M_sbc =Steel_density*pi/4*(Do_s^2-(Do_s-2*h_cs)^2)*Length*Kfe; <span class="comment">% kg</span>
+M_tr    = Steel_density*Qr*b_tr*(h_r+(d_r1+d_r2)/2)*Length*Kfe; <span class="comment">% kg</span>
+M_rbc  =Steel_density*pi/4*(Do_r^2-Di_r^2)*Length*Kfe; <span class="comment">% kg</span>
+M_total_steel = M_ts + M_sbc+M_tr + M_rbc;
+fprintf(<span class="string">'Total mass steel mass: %g kg\n'</span>,M_total_steel);
+M_total_inner=M_Cu+M_Al+M_total_steel; <span class="comment">% excluding case</span>
+fprintf(<span class="string">'Total machine mass exluding case: %g kg\n'</span>,M_total_inner);
+</pre><pre class="codeoutput">Total copper mass: 88.2326 kg
+Total aluminium mass: 21.6103 kg
+Total mass steel mass: 580.365 kg
+Total machine mass exluding case: 690.208 kg
+</pre><h2 id="22">POWER LOSSES</h2><pre class="codeinput"><span class="comment">%Conduction Loss</span>
+Pcu = 3*Irated^2*(Rs_s+Rs_r_s); <span class="comment">% watts</span>
+fprintf(<span class="string">'Total copper loss: %g Watts\n'</span>,Pcu);
+<span class="comment">%Core Loss</span>
+<span class="comment">% 35JN300: 1.1W/kg @1.0T, 2.6W/kg @1.5T @50Hz</span>
+<span class="comment">% Simplified Steinmetz Eqn. for 35JN300 : Pcore=Cx*B^beta at 50Hz</span>
+Pc1=1.1;
+Pc2=2.6;
+Tc1=1;
+Tc2=1.5;
+beta=log(Pc1/Pc2)/(log(Tc1)-log(Tc2));
+Cx=Pc1/Tc1^beta;
+
+Pcore_st = Cx*B_ts^beta*M_ts; <span class="comment">% watts, Stator Teeth Core Loss</span>
+Pcore_sbc=Cx*B_sbc^beta*M_sbc; <span class="comment">% watts, Stator Yoke Core Loss</span>
+Pcore_rt = Cx*B_tr^beta*M_tr; <span class="comment">% watts, Stator Teeth Core Loss</span>
+Pcore_rbc=Cx*B_rbc^beta*M_rbc; <span class="comment">% watts, Stator Yoke Core Loss</span>
+
+<span class="comment">% stator total core loss (fundamental)</span>
+fprintf(<span class="string">'stator teeth core loss @50Hz %g Watts\n'</span>,Pcore_st);
+fprintf(<span class="string">'stator back core loss @50Hz %g Watts\n'</span>,Pcore_sbc);
+fprintf(<span class="string">'rotor teeth core loss @50Hz %g Watts\n'</span>,Pcore_rt);
+fprintf(<span class="string">'rotor back core loss @50Hz %g Watts\n'</span>,Pcore_rbc);
+Pcore=Pcore_st+Pcore_sbc+Pcore_rt+Pcore_rbc;
+fprintf(<span class="string">'Total core loss @50Hz %g Watts.\n'</span>,Pcore);
+<span class="comment">% Representation of Core Loss in Equivalent Circuit</span>
+Rcore = Vphase^2/(Pcore/3); <span class="comment">% Ohms</span>
+fprintf(<span class="string">'The core loss resistance: %g Ohms\n'</span>,Rcore);
+
+<span class="comment">% Friction and Windage Losses</span>
+<span class="comment">% An rough estimation taken for Friction and Windage Losses.</span>
+P_fw = 0.008*Pout_n; <span class="comment">% watts</span>
+</pre><pre class="codeoutput">Total copper loss: 10373 Watts
+stator teeth core loss @50Hz 202.205 Watts
+stator back core loss @50Hz 429 Watts
+rotor teeth core loss @50Hz 145.71 Watts
+rotor back core loss @50Hz 425.463 Watts
+Total core loss @50Hz 1202.38 Watts.
+The core loss resistance: 133.07 Ohms
+</pre><h2 id="23">EFFICIENCY CALCULATION</h2><pre class="codeinput">TotalLoss=P_fw+Pcore+Pcu;
+n_estimated = Pout_n/(Pout_n+TotalLoss);
+fprintf(<span class="string">'Total Loss of the Generator: %g kW\n'</span>,TotalLoss*1e-3);
+fprintf(<span class="string">'Efficiency of the Generator: %4.2f %%\n'</span>,100*n_estimated);
+</pre><pre class="codeoutput">Total Loss of the Generator: 13.5754 kW
+Efficiency of the Generator: 94.85 %
+</pre><h2 id="24">FRAMING</h2><pre class="codeinput">I = imread(<span class="string">'Frame of the Generator.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Selected Frame for the Generator'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+</pre><img vspace="5" hspace="5" src="InductionGenerator_10.png" style="width:658px;height:507px;" alt=""> <h2 id="25">COOLING</h2><pre class="codeinput">I = imread(<span class="string">'Cooling.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Cooling of the Machine'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+Emissivity=0.85; <span class="comment">%Black Coated</span>
+CaseLength=0.5;
+CaseDiameter=0.7;
+CaseSurface=2*pi*CaseDiameter*CaseLength*0.5;
+fprintf(<span class="string">'Surface Area of the case: %4.2f m2\n'</span>,CaseSurface);
+<span class="comment">% Radiation</span>
+Prad=CaseSurface*0.85*5.67*1e-8*((273+Tsurf)^4-(273+Tamb)^4);
+fprintf(<span class="string">'Radiated Heat: %4.2f W\n'</span>,Prad);
+<span class="comment">% Heat Dissipation with conduction is also negligible</span>
+
+<span class="comment">% Convection</span>
+CaseSurfaceFin=CaseSurface*5;
+<span class="comment">% Calculation of Convection Coefficient Eqn 9.55</span>
+Vair=7; <span class="comment">% m/s blowed over the surface of the machine via a shaft mounted fan</span>
+hconv=3.89*sqrt(Vair/CaseLength); <span class="comment">%W/m2K</span>
+fprintf(<span class="string">'Convection Coefficient: %g W/m2K\n'</span>,hconv);
+Pconv=CaseSurfaceFin*(Tsurf-Tamb)*hconv;
+fprintf(<span class="string">'Blowed Heat: %g W\n'</span>,Pconv);
+<span class="comment">% Dissipated heat is not enough to satisfy machine losses</span>
+<span class="comment">% Designed should be revised for open case and/or Specified temperatures must be increased</span>
+</pre><pre class="codeoutput">Surface Area of the case: 1.10 m2
+Radiated Heat: 343.32 W
+Convection Coefficient: 14.555 W/m2K
+Blowed Heat: 3200.82 W
+</pre><img vspace="5" hspace="5" src="InductionGenerator_11.png" style="width:1013px;height:266px;" alt=""> <h2 id="26">TORQUE_SPEED CHARACTERISTICS</h2><p>Obtain the variables that will be used in the torque equation:</p><pre class="codeinput">wsync = Nsync*2*pi/60; <span class="comment">% rad/sec</span>
+<span class="comment">% Thevenin variables</span>
+Zm = (1j*Xm*Rcore)/(1j*Xm+Rcore); <span class="comment">% ohms</span>
+Xs = 2*pi*fn*Ls; <span class="comment">% ohms @ 50 Hz</span>
+Xr_s=1.5*2*pi*fn*Lr_s; <span class="comment">% ohms @ 50hz</span>
+Zs = Rs_s+1j*Xs; <span class="comment">% ohms</span>
+Vth = Vphase*Zm/(Zs+Zm); <span class="comment">% volts</span>
+Zth = Zs*Zm/(Zs+Zm); <span class="comment">% ohms</span>
+Rth = real(Zth); <span class="comment">% ohms</span>
+Xth = imag(Zth); <span class="comment">% ohms</span>
+<span class="comment">% Slip (and rotor speed) array</span>
+s = 0.05:-0.005:-0.5;
+Nr = Nsync*(1-s); <span class="comment">% rpm</span>
+wr = Nr*2*pi/60; <span class="comment">% rad/sec</span>
+<span class="comment">% Torque array using the calculated variables and slip variation</span>
+Tm = (3*(abs(Vth))^2/wsync)*(1./ ( (Rth+Rs_r_s./s).^2 + (Xth+Xr_s)^2 ) ).*(Rs_r_s./s); <span class="comment">% Nm</span>
+<span class="comment">% At synchronous speed, torque will be zero (avobe equation cannot calculate)</span>
+Tm((s==0)) = 0; <span class="comment">% Nm</span>
+Pm=wr.*Tm;
+<span class="comment">% Plot the torque-speed curve</span>
+figure;
+hold <span class="string">on</span>;
+xlabel(<span class="string">'Rotor speed (rpm)'</span>,<span class="string">'Fontweight'</span>,<span class="string">'Bold'</span>);
+yyaxis <span class="string">left</span>
+plot(Nr,-1e-3*Tm,<span class="string">'b'</span>);
+ylabel(<span class="string">'Torque (kNm)'</span>,<span class="string">'Fontweight'</span>,<span class="string">'Bold'</span>);
+ylim([-20 30]);
+
+yyaxis <span class="string">right</span>
+plot(Nr,-1e-3*Pm,<span class="string">'r'</span>);
+ylabel(<span class="string">'Power (kW)'</span>,<span class="string">'Fontweight'</span>,<span class="string">'Bold'</span>);
+ylim([ -1e2 2.5e3]);
+
+title (<span class="string">'Torque-Speed Characteristic of the Machine'</span>,<span class="string">'Fontweight'</span>,<span class="string">'Bold'</span>);
+grid <span class="string">on</span>;
+grid <span class="string">minor</span>;
+hold <span class="string">off</span>;
+</pre><img vspace="5" hspace="5" src="InductionGenerator_12.png" style="width:560px;height:420px;" alt=""> <h2 id="27">FEA DRAWINGS AND CONCLUSIONS</h2><p>In general, FEA results verify the analyctical calculations, however, there is a significant difference between Torque-Speed characteristics obtained by the two methods. Which is mainly caused by the difference between rotor leakage reactance obtained by this two methods. Analyticaly calculated leakage reactance value is almost half of the simulation value.</p><pre class="codeinput">I = imread(<span class="string">'RatedMagneticData.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Magnetic Data'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+
+I = imread(<span class="string">'Material Consumption.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Material Consumption Data'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+
+I = imread(<span class="string">'RatedPerformance.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Performance Indicators'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+
+I = imread(<span class="string">'Rated Parameters.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Rated Parameters'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+
+
+I = imread(<span class="string">'T-P vs Speed in Generation Mode_RMxprt.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'T-P vs Speed Charactristic of the Generator'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+
+I = imread(<span class="string">'Efficiency_RMxprt.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Efficiency Curve of the Generator'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+
+I = imread(<span class="string">'PowerFactor_RMxprt.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Power Factor Variation wrt Speed'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+
+
+<span class="comment">% Operating point and efficiency curve of the designed machine is very</span>
+<span class="comment">% close to the specified values. Magnetic flux density values calculated by the simulation program</span>
+<span class="comment">%are similar to the analytical values. However, air gap flux density has not a sinusoidal distribution</span>
+<span class="comment">% as expected.</span>
+
+
+I = imread(<span class="string">'Air Gap Flux Density.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Air Gap Flux Density'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+
+I = imread(<span class="string">'FluxDensity_Machine_Maxwell2D.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Flux Density Distribution of the Machine'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+
+I = imread(<span class="string">'Bvector.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Magnetic Flux Density Orientation'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+
+I = imread(<span class="string">'FluxDensity_Tooth_Maxwell2D.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Flux Density Distribution of the Tooth'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+
+I = imread(<span class="string">'FluxDensity_Yoke_S_Maxwell2D.png'</span>);
+figure;
+imshow(I);
+title(<span class="string">'Flux Density Distribution of the Stator Back Core'</span>,<span class="string">'FontSize'</span>,16,<span class="string">'FontWeight'</span>,<span class="string">'Bold'</span>);
+
+<span class="comment">% To sum up, results show two mismatches: PF and dissipated heat both requies additonal study.</span>
+<span class="comment">% At the and of this study, a valuable experience on a useful well-known FEA simulation software and</span>
+<span class="comment">% on the anatomy of an Asynchronous Machine.</span>
+</pre><img vspace="5" hspace="5" src="InductionGenerator_13.png" style="width:550px;height:460px;" alt=""> <img vspace="5" hspace="5" src="InductionGenerator_14.png" style="width:555px;height:421px;" alt=""> <img vspace="5" hspace="5" src="InductionGenerator_15.png" style="width:549px;height:418px;" alt=""> <img vspace="5" hspace="5" src="InductionGenerator_16.png" style="width:554px;height:413px;" alt=""> <img vspace="5" hspace="5" src="InductionGenerator_17.png" style="width:1174px;height:721px;" alt=""> <img vspace="5" hspace="5" src="InductionGenerator_18.png" style="width:1174px;height:721px;" alt=""> <img vspace="5" hspace="5" src="InductionGenerator_19.png" style="width:1174px;height:721px;" alt=""> <img vspace="5" hspace="5" src="InductionGenerator_20.png" style="width:1226px;height:721px;" alt=""> <img vspace="5" hspace="5" src="InductionGenerator_21.png" style="width:1226px;height:721px;" alt=""> <img vspace="5" hspace="5" src="InductionGenerator_22.png" style="width:1226px;height:721px;" alt=""> <img vspace="5" hspace="5" src="InductionGenerator_23.png" style="width:1226px;height:721px;" alt=""> <img vspace="5" hspace="5" src="InductionGenerator_24.png" style="width:1226px;height:721px;" alt=""> <h2 id="28">REFERENCES</h2><p>[1] Pyrhonen, J., Jokinen, T., &amp; Hrabovcova, V. (2013). Design of rotating electrical machines. John Wiley &amp; Sons.</p><pre class="codeinput"><span class="comment">%[2] http://www.ti.com/lit/ml/slup125/slup125.pdf</span>
+<span class="comment">%[3] http://www.regalbeloit.eu/catalogues/Insulation_Class_Explanantion.pdf</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% EE564 - Design of Electrical Machines
+%%Project-3: Induction Generator Design
+%%Name: Olcay BAY
+%%ID: 1673672
+%% INTRODUCTION
+% In this project, design of a squirrel cage asynchronous
+% generator for wind turbines will be performed
+
+% circuit
+% # Calculation of stator to rotor turns ratio
+% # Torque-speed characteristics
+% # Determination of basic parameters like starting torque, maximum torque
+% # Motoranalysis
+% # Conclusions
+% # References
+
+
+%%  Specifications of asynchronous squirrel cage induction motor
+% Rated Power Output: 250 kW
+% Line to line voltage: 400 V
+% Power factor: 0.87
+% Rated Wind Speed: 14 m/s
+% Rated Turbine Speed: 24.3 rpm
+% Gear Ratio: 31.2
+% Frequency: 50 Hz
+% Rated Speed: 758 rpm
+% Gearbox: (Coupled from wind turbine blade)
+% Insulation Class: F (Max. avg:145, Hotspot: 155 )
+% Duty: Continuous running duty (S1)
+% Efficiency: IE2,  95-96%
+% Ingress protection: IP54
+% Connection of motor windings:Y
+% Ambient Temperature: 50C 
+%% Design Procedure
+% Design procedure is given by the following flowchart[1]: 
+clear all;
+clc;
+close all;
+I = imread('Design Procedure.png');
+figure;
+imshow(I);
+title('Shear Stress For Different Machines','FontSize',16,'FontWeight','Bold');
+
+%% Main Design Inputs
+%% 
+Pout_n = 250e3;% Nominal Output Power, watts
+pole = 8;%Pole Number
+p = pole/2;%Pole Pair 
+m = 3;%Number of phases
+Vn = 400; % Nominal line voltage (l-l)
+Vphase = Vn/sqrt(3); % Nominal phase voltage
+fn = 50; %Nominal Frequency, Hz
+Nsync = 120*fn/pole; % rpm
+Nrated = 758; %Nominal rotor speed, rpm
+gear_ratio = 31.2; %
+pf_expected = 0.86; %
+n_expected = 0.95; %
+%
+u0 = 4*pi*1e-7;
+Tsurf=90; %Machine Surfeace Temperature
+Tamb=50; % Ambient Temperature, Worst Case
+Tw=100; % Average winding temperature
+Kfe=0.95; % Lamination Factor, for the selected lamination
+%
+%% Machine Size
+%%
+Sout_expected=Pout_n/pf_expected;%Expected apparent output power
+Pmec = Pout_n/n_expected; % watts 
+Irated = Sout_expected/(sqrt(3)*Vn); % amps
+omega_rot = Nrated*2*pi/60; % rated angular speed of rotor, rad/sec
+Trated = Pmec/omega_rot; % Rated torque,
+Power_pp=Pout_n/p; % Power per pole-pair, watts
+% Power_pp:62500, p:4  from graph given below, Cmech between 200-250.
+I = imread('Cmec.png');
+figure;
+imshow(I);
+title('Specific Machine Constant (Cmec) vs power/pole-pair','FontSize',16,'FontWeight','Bold');
+%taken as
+Cmech = 220; % kWs/m^3
+% Calculation of the aspect ratio 
+X = (pi/pole)*(p)^(1/3); % aspect ratio
+fprintf('Aspect ratio: %g\n',X);
+% diameter^2*length can be calculated by using the Cmec relation:
+D2L = Pout_n*1e-3/(Cmech*(Nsync/60)); %
+% From these two information, the inner diameter and length can be calculated:
+Di_s = (D2L/X)^(1/3); % Stator inner diameter, m
+Di_s=round(Di_s,3); % round up to 3 decimal places 
+Length = Di_s*X; % Rotor-Stator Length, m
+Length=round(Length,3); % round up to 3 decimal places 
+% For a 8 pole machine, outer diameter of the stator can be found using:  
+% [T.Miller - Electric Machine Design Course, Lecture-5, Slide4]
+% The air gap calculation a scale factor of 1.6 is added for heavy duty operation.
+g = 1e-3*1.6*(0.18+0.006*Pout_n^0.4); % m
+g=  round(g, 4); % round up to 4 decimal places
+fprintf('Inner diameter of the stator: %g m\n',Di_s);
+fprintf('Length of the machine: %g m\n',Length);
+fprintf('Air gap distance: %g mm\n\n',g);
+
+
+%% Stress Factors
+%%
+% Calculation of the tangential force using rated torque:
+Ftan = Trated/(Di_s*0.5); % Newton
+surface_area = pi*Di_s*Length; % m^2
+% calculation of tangantial stress:
+StressTangent = 1e-3*Ftan/surface_area; % kPa
+fprintf('Tangential force: %g Newtons\n',Ftan);
+fprintf('Tangential stress: %g kPascals\n',StressTangent);
+% Resulting factor (Ftan_s: 23 kPa) is around given average value in figure:
+I = imread('shear stress.png');
+figure;
+imshow(I);
+title('Shear Stress For Different Machines','FontSize',16,'FontWeight','Bold');
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+% The magnetic loading of the machine is selected from the table 6.2 of textbook
+
+I = imread('Permitted Flux Densities.png');
+figure;
+imshow(I);
+title('Reasonable Flux Densities','FontSize',16,'FontWeight','Bold');
+Bgap = 0.75; % peak magnetic loading of air gap , T 
+fprintf('\nAir gap magnetic loading: %g Tesla\n',Bgap);
+% Then the electric loading becomes 
+electric_loading =sqrt(2)* StressTangent/Bgap; % kA/m
+fprintf('Resultant electric loading: %g kA/m\n',electric_loading);
+% Comparing with the reference values given in Table 6.3 in texbook
+I = imread('Electrical Loading.png');
+figure;
+imshow(I);
+title('current densities(J) and linear current densities(A) for various electrical machines','FontSize',16,'FontWeight','Bold');
+% As seen, resulting value is acceptable  
+
+%% Selection of stator slot number 
+% Stator winding is decided to be a double layer winding, 
+%stator slot pitch for asynchronous machines is typically in the range of 7-45 mm
+% Then minimum and maximum number of slots can be calculated by:
+StatorInnerCircumference = pi*Di_s; % m
+Qs_max = floor(StatorInnerCircumference/0.007);
+Qs_min = ceil(StatorInnerCircumference/0.045);
+fprintf('Possible stator slot numbers: %g -%g \n',Qs_min,Qs_max);
+% Then possible stator slot numbers resulting an integer slot machine 
+%can be found by
+k=1;
+Qs=0;
+qs=1;
+fprintf('Possible stator slot numbers(Qs) and resulting qs values:\n');
+while (Qs<Qs_max)
+    Qs=m*pole*qs;
+    if (Qs>Qs_min&&Qs<Qs_max)
+        fprintf(' Qs=%d, qs = %d\n',Qs,qs);
+    end
+    qs=qs+1;
+end 
+
+% In order to construct a smooth MMF waveform, a large Qs is desirable,
+% Considering manufacturing difficulties, 96 or 120 would be optimal choice
+% As a starting point Qs taken as 96
+Qs=96;
+
+qs=Qs/m/pole;
+%for pole>4 recomended rotor slot number,Qr given by Qr=1.2Qs (from lecture notes) 
+Qr=round(1.2*Qs);
+Qr=Qr-mod(Qr,2); % Odd values may cause vibration
+FullSpan=Qs/pole;
+CoilSpan=FullSpan;
+
+fprintf(' Selected slot numbera Qs=%d, qs=%d, Qr=%d\n',Qs,qs,Qr);
+%However Qr must be checked in order to prevent unwanted Qs-Qr pairs causing slot harmonics:
+if ( Qr==(Qs+2*p) ||  Qr==(Qs-2*p) || Qr==(2*Qs+2*p) || Qr==(2*Qs-2*p) ||  Qr==(Qs+p) || Qr==(Qs-p) ||   Qr==(0.5*Qs+p) || Qr==(0.5*Qs-p)    )
+        fprintf(' REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-improper Qs-Qr pair!!! \n');
+end
+fprintf('REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-\n');
+
+
+ %Then for two layer winding,
+PitchRatio=1;
+fprintf('\n\nWinding factors for full span coil:  \n');
+
+for HarmonicOrder=1:2:13
+    SlotAngle=(2*pi/(Qs/p));%  radians
+    kd=sin(qs*HarmonicOrder*(SlotAngle*0.5)) / (  qs*sin(HarmonicOrder*(SlotAngle*0.5)) );
+    kp=sin(HarmonicOrder*pi/2*PitchRatio);
+    kw=kp*kd;
+    if mod(HarmonicOrder,3)>0
+            fprintf('kd%d=%4.3f, kp%d=%4.3f,  kw%d=%4.3f\n',HarmonicOrder,kd, HarmonicOrder,kp, HarmonicOrder, kw);
+    end
+end
+
+CoilSpan=FullSpan-1;
+PitchRatio=CoilSpan/FullSpan;
+fprintf('\n\nWinding Factors for a coil span of %d/%d: \n',CoilSpan, FullSpan);
+for HarmonicOrder=1:2:13
+    SlotAngle=(2*pi/(Qs/p));%  radians
+    kd=sin(qs*HarmonicOrder*(SlotAngle*0.5)) / (  qs*sin(HarmonicOrder*(SlotAngle*0.5)) );
+    kp=sin(HarmonicOrder*pi/2*PitchRatio);
+    kw=kp*kd;
+    if mod(HarmonicOrder,3)>0
+            fprintf('kd%d=%4.3f, kp%d=%4.3f,  kw%d=%4.3f\n',HarmonicOrder,kd, HarmonicOrder,kp, HarmonicOrder, kw);
+    end
+end
+
+CoilSpan=FullSpan-2;
+PitchRatio=CoilSpan/FullSpan;
+
+fprintf('\n\nWinding Factors for a coil span of %d/%d: \n',CoilSpan, FullSpan);
+
+for HarmonicOrder=1:2:13
+    SlotAngle=(2*pi/(Qs/p));%  radians
+    kd=sin(qs*HarmonicOrder*(SlotAngle*0.5)) / (  qs*sin(HarmonicOrder*(SlotAngle*0.5)) );
+    kp=sin(HarmonicOrder*pi/2*PitchRatio);
+    kw=kp*kd;
+    if mod(HarmonicOrder,3)>0
+            fprintf('kd%d=%4.3f, kp%d=%4.3f,  kw%d=%4.3f\n',HarmonicOrder,kd, HarmonicOrder,kp, HarmonicOrder, kw);
+    end
+end
+
+%%
+% When compared to full-pitch coil span, 10/12  seems to provide optimum attenuation values for harmonics 
+% the 5th harmonic and 7th harmonics are almost eliminated.
+% 3rd harmonic and multiples will be eliminated on the line-to-line voltages.
+%However, elimination of harmonics with distribution and  fractional pitch
+%factor resulted in approximately 8% loss on the fundamental component
+% This can be easily compansated increasing the number of stator turns or by increasing pole area
+CoilSpan=FullSpan-2;
+PitchRatio=CoilSpan/FullSpan;
+fprintf('REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-\n');
+fprintf('Selected coil span: %d/%d: \n',CoilSpan, FullSpan);
+kd1=sin(qs*(SlotAngle*0.5)) / (  qs*sin(SlotAngle*0.5) );
+kp1=sin(pi/2*PitchRatio);
+kw1=kp1*kd1;
+fprintf('REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-\n');
+
+%% Calculation of stator number of turns (Ns)
+% Under the rated phase voltage, required number of series turns in a phase can be
+% found using expected air gap flux and determined machine dimensions and winding factor:
+% pole flux 2/pi*Bpeak*Ts*Length
+Flux_PerPole = 2*Di_s*Length*Bgap/pole; % weber
+Ns = Vphase/(4.44*fn*Flux_PerPole*kw1);
+% number of conductorsin a phase:
+Ns_cu=Ns*2;
+fprintf('required number of series turns in a phase,Ns : %g\n', Ns);
+% For a double layer winding
+SemiSlotPerPhase=2*Qs/m;
+% Then the number of turns per semi slot (SzQ) can be found by:
+SzQ = round(Ns_cu/SemiSlotPerPhase);
+zQs= SzQ*2;
+fprintf('number of series conductors  in a slot,zQ: %g\n', zQs);
+Ns_old=Ns;
+Ns=zQs*p*qs;
+fprintf('REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHupdated Ns:%g\n', Ns);
+
+% Resulting winding diagram is given in figure:
+I = imread('Winding Diagram.png');
+figure;
+imshow(I);
+title('Stator Winding Diagram','FontSize',16,'FontWeight','Bold');
+
+% Although updated Ns is very close to calculated value, in order to keep air gap flux density at desired level,
+% Machine dimensions must be scaled accordingly:
+Di_s_new=sqrt(Di_s^2*X*Ns_old/(X*Ns));
+L_new=X*Di_s_new;
+Di_s=round(Di_s_new,3); % round up to 3 decimal places
+L_s=round(L_new,3);
+
+fprintf('Updated inner diameter of the stator: %g m\n',Di_s);
+fprintf('Updated length of the machine: %g m\n',Length);
+Bgap_actual = Vphase*pole/(4.44*Ns*fn*kw1*4*Length*Di_s*0.5); % Tesla
+Bgap=Bgap_actual;% Update Bgap
+Flux_PerPole = 2*Di_s*Length*Bgap_actual/pole; % weber
+Ns = Vphase/(4.44*fn*Flux_PerPole*kw1);
+Ts=pi*Di_s/Qs; %Slot pitch
+%for simplicity initially saturation factor taken as 1 
+
+%% STATOR SLOT DIMENSIONS
+I = imread('Stator Slot Dimensions.png');
+figure;
+imshow(I);
+title('Stator Slot Dimensions','FontSize',16,'FontWeight','Bold');
+% MMF calculation is important to check whether the air gap flux density
+
+Js=5e6;  %current density for stator (A/m2)
+A_Cu=Irated/Js;  %required copper cross section (mm2)
+%Skin depth for Copper at %50 Hz 10mm, copper diameter must be smaller than
+%20mm, considering slot opening:
+dcu=2.91e-3;  %wire diameter (m) 
+fprintf('\n\nwire diameter(stator) %g(mm)-AWG9\n',dcu*1e3);
+Strands= ceil(A_Cu/(pi*dcu*dcu/4));
+fprintf('Number of strands=%g\n',Strands);
+A_Cu=Strands*pi*(dcu/2)^2; % updated
+Kf=0.3; %copper fill factor
+Ass=A_Cu/Kf; % Slot area, mm2
+fprintf('Slot Area=%g mm2\n',Ass*1e6);
+
+B_ts=1.5; % Average tooth flux From Table 6.2 (1.4T-2.1T)
+b_os=3e-3; %m, slot opening typically selected as 3mm opening must allow wire insertion during manufacturing
+h_os=1e-3;%m
+h_w=1e-3;%m 
+b_ts=((Bgap*Ts)/(Kfe*B_ts)) ;% stator tooth width, bds,m
+b_s1=(pi*(Di_s+2*(h_os+h_w))/Qs)-(b_ts); % b4 (book notation)
+b_s2 = 1.2*b_s1; % from FEA model                                                                                                           !!!!!
+h_s=2*Ass/(b_s1+b_s2);
+fprintf('The height of slot=%g mm\n',h_s*1e3);
+
+% Outer diameter of machine typically defined as 1.66*inner diameter for an
+% 8 pole machine, however a more optimum selection can be obtained as
+B_sbc=1.4;% Back core flux density
+% For the calculation of the height of the stator back iron or yoke (hcs),
+h_cs=Flux_PerPole/(2*Length*B_sbc);% m
+fprintf('The height of stator back iron(h_cs): %g mm\n',h_cs*1e3);
+Do_s = (Di_s+2*(h_os+h_w+h_s+h_cs)); % m
+Do_s=round(Do_s,3); % round up to 3 decimal places
+fprintf('Outer diameter of the stator: %g m\n',Do_s);
+
+%% ROTOR SLOT DIMENSIONS
+% Rotor Bar Current Calculations pg320 in [1]
+I = imread('Rotor Slot Dimensions.png');
+figure;
+imshow(I);
+title('Rotor Slot Dimensions','FontSize',16,'FontWeight','Bold');
+
+Ir=zQs*Qs/Qr*Irated*pf_expected;
+Iring=Ir/(2*sin(pi*p/Qr));
+Jr=4*1e6;  %current density for rotor bar (A/m2)
+Jring=4*1e6;  %current density for rotor bar (A/m2)
+A_bar=Ir/Jr; % Rotor Bar Crossection, m2
+A_ring=Iring/Jring; % Rotor Bar Crossection, m2
+Tr=(pi*(Di_s-(2*g)))/Qr; % Rotor slot pitch, m
+B_tr=1.6 ;%T, Rotor tooth flux density
+b_tr=Bgap*Tr/(B_tr*Kfe) ;%Rotor tooth width to prevent rotor flux density from saturization
+
+% Typical values assigned for slot opening and tooth hat
+h_or = 2*1e-3; % m
+b_or = 2*1e-3; % m
+% upper diameter and lower diameter of the slot can be approximated as
+d_r1=Tr-b_tr;
+d_r2=0.5*d_r1;
+%approximating tear-shaped bar as a triangle with a safety factor of 1.2, Ar= (h_r*(2*d_r1)/2*1.2
+h_r=A_bar/1.2/d_r1;
+% Flux path in the rotor follows a similar behaviour as in the stator
+% Then, calculation of rotor back core height (h_cr):
+B_rbc=1.2;% Rotor back core flux density
+h_cr = Flux_PerPole/(2*Length*B_rbc); % m
+fprintf('The height of the rotor back iron(hcr): %g mm\n',1e3*h_cr);
+Di_r=Di_s-2*(g+h_r+h_cr+d_r1+d_r2);
+Do_r=Di_s-2*g;
+%End Ring Dimensions
+h_ring=h_r+0.5*(d_r1+d_r2);
+w_ring=A_ring/h_ring;
+
+%% todo Shaft Diameter
+%% Calculation of Magnetization Current
+I = imread('Core Material.png');
+figure;
+imshow(I);
+title('Properties of the Selected Core Material','FontSize',16,'FontWeight','Bold');
+%REPLACE_WITH_DASH_DASH 
+% Curve Fitting function for H-B curve
+x=[0,10,25,50,100]; % From material catalog
+y=[0.0,1.5,1.59, 1.68, 1.80];
+x=1e2*transpose(x);
+y=transpose(y);
+HBCurve=fit(x,y,'linearinterp');
+plot(HBCurve,x,y);
+BHCurve=fit(y,x,'linearinterp');
+
+%REPLACE_WITH_DASH_DASH
+%Carters Coefficient calculation for Stator
+be = b_os*(b_os/g)/(5+b_os/g);
+kcs = Ts/(Ts-be);
+%REPLACE_WITH_DASH_DASH
+%Carters Coefficient calculation for Rotor
+be = b_or*(b_or/g)/(5+b_or/g);
+kcr = Tr/(Tr-be);
+kc=kcs*kcr;
+fprintf('\n\nCarter Coefficient=%g\n',kc);
+g_eff = g*kc;
+%REPLACE_WITH_DASH_DASHTODO Add Cooling Duct 
+%REPLACE_WITH_DASH_DASH
+H_gap=Bgap/u0;
+MMF_gap=H_gap*g_eff;
+fprintf('H of the air gap: %g A/m\n',H_gap);
+fprintf('MMF(peak) on the air gap: %g A\n',MMF_gap);
+% The stator teeth MMF and back iron MMF can be calculated by using the
+% selected tooth and yoke flux density.
+H_ts = BHCurve(B_ts); % A/m
+MMF_ts = H_ts*(h_s+h_os+h_w); % Amps
+fprintf('H of the stator teeth: %g A/m\n',H_ts);
+fprintf('MMF(peak) on the stator teeth: %g A\n',MMF_ts);
+H_sbc = BHCurve(B_sbc); % A/m
+MMF_sbc = H_sbc*h_cs; % Amps
+fprintf('H stator back core: %g A/m\n',H_sbc);
+fprintf('MMF(peak) on the stator back core: %g A\n',MMF_sbc);
+
+% Same B-H data can be used. The rotor teeth MMF and back iron MMF can be
+% calculated by using the selected tooth and yoke flux density.
+H_tr = BHCurve(B_tr); % A/m
+MMF_tr = H_tr*(h_r+h_or+(d_r1+d_r2)/2); % Amps
+fprintf('H of the rotor teeth: %g A/m\n',H_tr);
+fprintf('MMF(peak) on the rotor teeth: %g A.\n',MMF_tr);
+H_rbc = BHCurve(B_rbc); % A/m
+MMF_rbc = H_rbc*(h_cr); % Amps
+fprintf('H of the rotor back core:%g A/m.\n',H_rbc);
+fprintf('MMF(peak) on the rotor back core: %g A\n',MMF_rbc);
+Peak_MMF=MMF_gap+MMF_ts+MMF_sbc+MMF_tr+MMF_rbc;
+Imag=Peak_MMF/(4/pi*(m/2)*(Ns/pole)*kw1*sqrt(2)); % amps
+fprintf('Magnetizing current %g Amps(rms)\n',Imag);
+
+%% Calculation of Magnetizing Inductance
+% Assuming all 8 poles are identical physically, 
+%Then, we can accept that the all windings belong to the same phase link same flux
+% However, since 2/m of the pole flux related/created by individual phase
+% currents,
+% Equivalent circuit magnetizing current can be expressed as 
+
+Lm=Ns*2/m*Flux_PerPole/Imag;
+Xm = 2*pi*fn*Lm; % Ohms
+% Validation 
+Imag2 = Vphase/(Xm); % amps
+fprintf('Magnetizing inductance (phase) %g mH\n',Lm*1e3);
+
+%% Calculation of Leakage Inductances
+% Calculation of stator leakage inductance is based on the equations
+% derived in class
+
+% Calculation of stator leakage inductance is again based on the equation
+% derived in class. The leakage reactance is also calculated at rated
+% frequency. 
+P_s = u0*Length*((h_os/b_os)+(h_s/(3*b_s2))); % permeance
+Ls = P_s*4*(Ns*kw1)^2*m/Qs; % Henries
+fprintf('\n\nThe stator leakage inductance of the machine %g uH\n',Ls*1e6);
+% Calculation of rotor leakage inductance is a little more tricky because
+% both rotor bar and end ring permeances are considered this time.
+% The leakage reactance is also calculated at rated frequency. 
+Pr = 0.66 + 2*h_r/(3*(d_r1+d_r2)) + h_or/b_or; % permeance
+Pdr = 0.9*Tr/(kcs*g_eff)*1e-2; % permeance
+Kx = 1; % skin effect coefficient
+P2 = u0*Length*(Kx*Pr+Pdr); % permeance of rotor bar
+Lr_s = P2*4*(Ns*kw1)^2*m/Qr; % Henries, reflected to stator side
+fprintf('The rotor leakage inductance referred to the stator: %g uH\n',Lr_s*1e6);
+
+%% Series Resistances of Stator&Rotor Windings
+% For the calculation of stator winding resistance of one phase, its length
+% is first calculated considering both machine length and end windings.
+Cu_span = CoilSpan*Ts; % Conductor span= Coil Span*Slot pitch
+Lend=1.2*Cu_span; % end winding length
+MLT_s = 2*(Length+Lend)+0.1; % m;
+% increase of MLT due to stranding ignored
+fprintf('The resultant end winding length: %g m\n',Lend);
+fprintf('The mean length turn (MLT) of stator: %g m\n',MLT_s);
+
+% Average winding temperature Tw taken as 75C
+rho_cu20 = 1.68*1e-8; % ohm*m
+rho_cuTw = rho_cu20*(1+0.00386*(Tw-20)); % ohm*m
+Rs_sdc = rho_cuTw*MLT_s*Ns/A_Cu; % ohms
+Rs_s = Rs_sdc; % Since the conductor is stranded AC resistance can be taken equal to Rs_dc  
+fprintf('The AC resiatance of the stator phase winding: %g mOhms\n',Rs_s*1e3);
+
+% % The calculation of rotor bar resistance .
+rho_Al20 = 2.65*1e-8; % ohm*m
+rho_AlTw = rho_Al20*(1+.00429*(Tw-20)); % ohm*m
+del_Al=sqrt(rho_AlTw/(pi*fn*u0));
+fprintf('Skin depth of rotor bars at operating Temperature: %g mm\n',del_Al*1e3);
+% As the diameter of rotor bar thicknes close to skin depth from [2],
+% Rac/Rdc can be taken as 1;
+Kr = 1; %Rac/Rdc
+%Calculation of resistance of the individual rotor bars.
+R_bar=Kr*rho_AlTw*Length/A_bar;
+%Calculation of resistance of the part of the ring belonging to one bar.
+Length_ring = pi*(Do_r-h_or-d_r1)/Qr; % approximately, m
+R_ring=Length_ring*rho_AlTw/A_ring;
+% Eqn 7.46 from textbook
+Rs_r = R_bar + R_ring/(2*(sin(pi*p/Qr))^2);
+Rs_r_s = Rs_r*4*m/Qr*(Ns*kw1)^2; % referred to primary,ohms
+fprintf('The rotor resistance referred to the stator: %g mOhms\n',Rs_r_s*1e3);
+
+
+%% Mass Calculations
+% Copper mass
+Copper_density = 8.96*1e3; % kg/m^3
+Aluminum_density=2.70*1e3; % kg/m^3
+Steel_density = 7.8*1e3; % kg/m^3
+Length_Cu = m*MLT_s*Ns; % m
+V_Cu = A_Cu*Length_Cu; % m^3
+M_Cu = Copper_density*V_Cu; % kg
+fprintf('Total copper mass: %g kg\n',M_Cu);
+% Aluminium mass
+Length_Al1 = Qr*Length; % m
+Length_Al2=2*Qr*Length_ring; %Two rings, m
+V_Al = A_bar*Length_Al1 + A_ring*Length_Al2; % m^3
+M_Al=Aluminum_density*V_Al;
+fprintf('Total aluminium mass: %g kg\n',M_Al);
+% Stator iron (core) mass 
+
+M_ts    = Steel_density*Qs*b_ts*(h_s+h_w+h_os)*Length*Kfe; %Stator teeth mass, kg
+M_sbc =Steel_density*pi/4*(Do_s^2-(Do_s-2*h_cs)^2)*Length*Kfe; % kg
+M_tr    = Steel_density*Qr*b_tr*(h_r+(d_r1+d_r2)/2)*Length*Kfe; % kg
+M_rbc  =Steel_density*pi/4*(Do_r^2-Di_r^2)*Length*Kfe; % kg
+M_total_steel = M_ts + M_sbc+M_tr + M_rbc;
+fprintf('Total mass steel mass: %g kg\n',M_total_steel);
+M_total_inner=M_Cu+M_Al+M_total_steel; % excluding case
+fprintf('Total machine mass exluding case: %g kg\n',M_total_inner);
+
+%% POWER LOSSES
+%Conduction Loss
+Pcu = 3*Irated^2*(Rs_s+Rs_r_s); % watts
+fprintf('Total copper loss: %g Watts\n',Pcu);
+%Core Loss
+% 35JN300: 1.1W/kg @1.0T, 2.6W/kg @1.5T @50Hz
+% Simplified Steinmetz Eqn. for 35JN300 : Pcore=Cx*B^beta at 50Hz
+Pc1=1.1;
+Pc2=2.6;
+Tc1=1;
+Tc2=1.5;
+beta=log(Pc1/Pc2)/(log(Tc1)-log(Tc2));
+Cx=Pc1/Tc1^beta;
+
+Pcore_st = Cx*B_ts^beta*M_ts; % watts, Stator Teeth Core Loss
+Pcore_sbc=Cx*B_sbc^beta*M_sbc; % watts, Stator Yoke Core Loss
+Pcore_rt = Cx*B_tr^beta*M_tr; % watts, Stator Teeth Core Loss
+Pcore_rbc=Cx*B_rbc^beta*M_rbc; % watts, Stator Yoke Core Loss
+
+% stator total core loss (fundamental)
+fprintf('stator teeth core loss @50Hz %g Watts\n',Pcore_st);
+fprintf('stator back core loss @50Hz %g Watts\n',Pcore_sbc);
+fprintf('rotor teeth core loss @50Hz %g Watts\n',Pcore_rt);
+fprintf('rotor back core loss @50Hz %g Watts\n',Pcore_rbc);
+Pcore=Pcore_st+Pcore_sbc+Pcore_rt+Pcore_rbc;
+fprintf('Total core loss @50Hz %g Watts.\n',Pcore);
+% Representation of Core Loss in Equivalent Circuit
+Rcore = Vphase^2/(Pcore/3); % Ohms
+fprintf('The core loss resistance: %g Ohms\n',Rcore);
+
+% Friction and Windage Losses
+% An rough estimation taken for Friction and Windage Losses.
+P_fw = 0.008*Pout_n; % watts
+
+
+%% EFFICIENCY CALCULATION
+TotalLoss=P_fw+Pcore+Pcu;
+n_estimated = Pout_n/(Pout_n+TotalLoss);
+fprintf('Total Loss of the Generator: %g kW\n',TotalLoss*1e-3);
+fprintf('Efficiency of the Generator: %4.2f %%\n',100*n_estimated);
+
+%% FRAMING
+I = imread('Frame of the Generator.png');
+figure;
+imshow(I);
+title('Selected Frame for the Generator','FontSize',16,'FontWeight','Bold');
+
+%% COOLING
+I = imread('Cooling.png');
+figure;
+imshow(I);
+title('Cooling of the Machine','FontSize',16,'FontWeight','Bold');
+Emissivity=0.85; %Black Coated
+CaseLength=0.5;
+CaseDiameter=0.7;
+CaseSurface=2*pi*CaseDiameter*CaseLength*0.5;
+fprintf('Surface Area of the case: %4.2f m2\n',CaseSurface);
+% Radiation
+Prad=CaseSurface*0.85*5.67*1e-8*((273+Tsurf)^4-(273+Tamb)^4);
+fprintf('Radiated Heat: %4.2f W\n',Prad);
+% Heat Dissipation with conduction is also negligible
+
+% Convection
+CaseSurfaceFin=CaseSurface*5;
+% Calculation of Convection Coefficient Eqn 9.55
+Vair=7; % m/s blowed over the surface of the machine via a shaft mounted fan
+hconv=3.89*sqrt(Vair/CaseLength); %W/m2K
+fprintf('Convection Coefficient: %g W/m2K\n',hconv);
+Pconv=CaseSurfaceFin*(Tsurf-Tamb)*hconv;
+fprintf('Blowed Heat: %g W\n',Pconv);
+% Dissipated heat is not enough to satisfy machine losses
+% Designed should be revised for open case and/or Specified temperatures must be increased 
+
+
+%% TORQUE_SPEED CHARACTERISTICS
+% Obtain the variables that will be used in the torque equation:
+wsync = Nsync*2*pi/60; % rad/sec
+% Thevenin variables
+Zm = (1j*Xm*Rcore)/(1j*Xm+Rcore); % ohms
+Xs = 2*pi*fn*Ls; % ohms @ 50 Hz
+Xr_s=1.5*2*pi*fn*Lr_s; % ohms @ 50hz 
+Zs = Rs_s+1j*Xs; % ohms
+Vth = Vphase*Zm/(Zs+Zm); % volts
+Zth = Zs*Zm/(Zs+Zm); % ohms
+Rth = real(Zth); % ohms
+Xth = imag(Zth); % ohms
+% Slip (and rotor speed) array
+s = 0.05:-0.005:-0.5;
+Nr = Nsync*(1-s); % rpm
+wr = Nr*2*pi/60; % rad/sec
+% Torque array using the calculated variables and slip variation
+Tm = (3*(abs(Vth))^2/wsync)*(1./ ( (Rth+Rs_r_s./s).^2 + (Xth+Xr_s)^2 ) ).*(Rs_r_s./s); % Nm
+% At synchronous speed, torque will be zero (avobe equation cannot calculate)
+Tm((s==0)) = 0; % Nm
+Pm=wr.*Tm;
+% Plot the torque-speed curve
+figure;
+hold on;
+xlabel('Rotor speed (rpm)','Fontweight','Bold');
+yyaxis left
+plot(Nr,-1e-3*Tm,'b');
+ylabel('Torque (kNm)','Fontweight','Bold');
+ylim([-20 30]);
+
+yyaxis right
+plot(Nr,-1e-3*Pm,'r');
+ylabel('Power (kW)','Fontweight','Bold');
+ylim([ -1e2 2.5e3]);
+
+title ('Torque-Speed Characteristic of the Machine','Fontweight','Bold');
+grid on;
+grid minor;
+hold off;
+
+%% FEA DRAWINGS AND CONCLUSIONS
+% In general, FEA results verify the analyctical calculations,
+% however, there is a significant difference between Torque-Speed
+% characteristics obtained by the two methods. Which is mainly caused by
+% the difference between rotor leakage reactance obtained by this two
+% methods. Analyticaly calculated leakage reactance value is almost half of
+% the simulation value.
+I = imread('RatedMagneticData.png');
+figure;
+imshow(I);
+title('Magnetic Data','FontSize',16,'FontWeight','Bold');
+
+I = imread('Material Consumption.png');
+figure;
+imshow(I);
+title('Material Consumption Data','FontSize',16,'FontWeight','Bold');
+
+I = imread('RatedPerformance.png');
+figure;
+imshow(I);
+title('Performance Indicators','FontSize',16,'FontWeight','Bold');
+
+I = imread('Rated Parameters.png');
+figure;
+imshow(I);
+title('Rated Parameters','FontSize',16,'FontWeight','Bold');
+
+
+I = imread('T-P vs Speed in Generation Mode_RMxprt.png');
+figure;
+imshow(I);
+title('T-P vs Speed Charactristic of the Generator','FontSize',16,'FontWeight','Bold');
+
+I = imread('Efficiency_RMxprt.png');
+figure;
+imshow(I);
+title('Efficiency Curve of the Generator','FontSize',16,'FontWeight','Bold');
+
+I = imread('PowerFactor_RMxprt.png');
+figure;
+imshow(I);
+title('Power Factor Variation wrt Speed','FontSize',16,'FontWeight','Bold');
+
+
+% Operating point and efficiency curve of the designed machine is very
+% close to the specified values. Magnetic flux density values calculated by the simulation program 
+%are similar to the analytical values. However, air gap flux density has not a sinusoidal distribution 
+% as expected.
+
+
+I = imread('Air Gap Flux Density.png');
+figure;
+imshow(I);
+title('Air Gap Flux Density','FontSize',16,'FontWeight','Bold');
+
+I = imread('FluxDensity_Machine_Maxwell2D.png');
+figure;
+imshow(I);
+title('Flux Density Distribution of the Machine','FontSize',16,'FontWeight','Bold');
+
+I = imread('Bvector.png');
+figure;
+imshow(I);
+title('Magnetic Flux Density Orientation','FontSize',16,'FontWeight','Bold');
+
+I = imread('FluxDensity_Tooth_Maxwell2D.png');
+figure;
+imshow(I);
+title('Flux Density Distribution of the Tooth','FontSize',16,'FontWeight','Bold');
+
+I = imread('FluxDensity_Yoke_S_Maxwell2D.png');
+figure;
+imshow(I);
+title('Flux Density Distribution of the Stator Back Core','FontSize',16,'FontWeight','Bold');
+
+% To sum up, results show two mismatches: PF and dissipated heat both requies additonal study. 
+% At the and of this study, a valuable experience on a useful well-known FEA simulation software and
+% on the anatomy of an Asynchronous Machine. 
+
+%% REFERENCES
+% [1] Pyrhonen, J., Jokinen, T., & Hrabovcova, V. (2013). Design of rotating electrical machines. John Wiley & Sons.
+%[2] http://www.ti.com/lit/ml/slup125/slup125.pdf
+%[3] http://www.regalbeloit.eu/catalogues/Insulation_Class_Explanantion.pdf
+
+
+##### SOURCE END #####
+--></body></html>
